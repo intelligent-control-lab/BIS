@@ -7,12 +7,6 @@ from matplotlib2tikz import save as tikz_save
 
 def roc_curve(models, settings):
 
-    # ['PotentialField',   'lambda',  [1 20]];
-    #     ['SlidingMode',      'minD',    [0 2]];
-    #     ['SmoothSafeSet',    'D',       [0 5]];
-    #     ['Naive',            'D',       [1 5]];
-    #     ['ReachableSet',     'minD',    [0 5]];
-    
     ret = dict()
     for model in models:
 
@@ -27,6 +21,7 @@ def roc_curve(models, settings):
             print(result)
             result.sort(key=lambda tup: tup[0])
             safety, efficiency, collision, param_set = tuple(map(list, zip(*result)))
+            safety = safety / np.max(safety)
             first_safe = 0
             if not (sum(collision) == 0):
                 first_safe = [i for i, e in enumerate(collision) if abs(e) > 1e-9][-1]+1
@@ -52,7 +47,7 @@ def roc_curve(models, settings):
         fig.legend()
         plt.xlabel('Safety')
         plt.ylabel('Efficiency')
-        tikz_save(model+'.tex')
+        # tikz_save(model+'.tex')
         fig.savefig(model+'.pdf', bbox_inches='tight')
         # plt.show()
 

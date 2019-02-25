@@ -2,14 +2,25 @@ from roc_curve import roc_curve
 import numpy as np
 import matplotlib.pyplot as plt
 def leaderboard():
-    models = ['SCARA','RobotArm']
+    """
+    This function generates roc curves for given models based on given parameter ranges
+    """
+    models = ['Unicycle']
     settings = [ \
-        ('BarrierFunction',  {'d_min': np.arange(0, 5, 1.0), 't': np.arange(0.6, 3.0, 0.4)}),\
-        ('SafeSet',          {'d_min': np.arange(0, 5, 1.0), 'yita': np.arange(3, 10, 2.0)}),\
-        ('PotentialField',   {'d_min': np.arange(0, 5, 1.0), 'lambd': np.arange(0.2, 3, 0.2)}),\
-        # ('PotentialField',   {'d_min': np.arange(0, 5, 0.5), 'lambd': np.arange(1, 20, 2.0)}),\
-        ('SlidingMode',      {'d_min': np.arange(0, 5, 1.0)}),\
-    ];
+        ('BarrierFunction',  {'d_min': np.arange(2, 3, 1)}),\
+        ('SafeSet',          {'d_min': np.arange(2, 3, 1)}),\
+        ('PotentialField',   {'d_min': np.arange(2, 3, 1)}),\
+        ('SlidingMode',      {'d_min': np.arange(2, 3, 1)}),\
+    ]
+
+    # models = ['SCARA','RobotArm']
+    # settings = [ \
+    #     ('BarrierFunction',  {'d_min': np.arange(0, 5, 1.0), 't': np.arange(0.6, 3.0, 0.4)}),\
+    #     ('SafeSet',          {'d_min': np.arange(0, 5, 1.0), 'yita': np.arange(3, 10, 2.0)}),\
+    #     ('PotentialField',   {'d_min': np.arange(0, 5, 1.0), 'lambd': np.arange(0.2, 3, 0.2)}),\
+    #     # ('PotentialField',   {'d_min': np.arange(0, 5, 0.5), 'lambd': np.arange(1, 20, 2.0)}),\
+    #     ('SlidingMode',      {'d_min': np.arange(0, 5, 1.0)}),\
+    # ];
 
     # models = ['Ball3D','Unicycle']
     # settings = [ \

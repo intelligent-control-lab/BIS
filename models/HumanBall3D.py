@@ -50,6 +50,7 @@ class HumanBall3D(Ball3D):
             self.kalman_estimate_state()
         else:
             self.rls_estimate_state(obstacle)
+        self.update_trace()
 
     def human_model(self):
 
@@ -86,13 +87,13 @@ class HumanBall3D(Ball3D):
 
         
     def load_model(self, render, loader, color=[0.8, 0.3, 0.2, 0.8], scale=0.5):
-        self.render = render
-        self.human_sphere = self.add_sphere(list(self.get_P()[:,0]), [0.8, 0.3, 0.2, 0.8], scale)
-        self.human_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],self.goal[2]], [0.8, 0.3, 0.2, 0.5], scale)
-    
+        Ball3D.load_model(self, render, loader, color, scale)
+        # self.robot_sphere = self.add_sphere(list(self.get_P()[:,0]), color, scale)
+        # self.human_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],self.goal[2]], color[:-1]+[0.5], scale)
+
     def redraw_model(self):
-        self.human_sphere.setPos(self.get_P()[0], self.get_P()[1], self.get_P()[2])
-        self.human_goal_sphere.setPos(self.goal[0], self.goal[1], self.goal[2])
+        self.robot_sphere.setPos(self.get_P()[0], self.get_P()[1], self.get_P()[2])
+        self.robot_goal_sphere.setPos(self.goal[0], self.goal[1], self.goal[2])
     
     
     def model_auxiliary(self):

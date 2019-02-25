@@ -21,7 +21,8 @@ U_{static} = \frac{\eta}{2} (\frac{1}{d} - \frac{1}{d_{min}})^2 \\
 U_{dynamic} = \lambda(-cos \theta)^{\beta}\frac{||v_{rel}||}{d}\\
 cos\theta = \frac{v_{rel}^T  x_{rel}}{||v_{rel}|| d}\\
 U = U_{static}+U_{dynamic}\\
-u = -\nabla_x U
+\dot x = -\nabla_x U = fx+fu \cdot u\\
+u = (-\nabla_x U - fx) / fu
 $$
 
 
@@ -30,7 +31,7 @@ $$
 u = solve(\phi, \dot \phi)\\
 $$
 
-
+ 
 
 
 ### Safe Set

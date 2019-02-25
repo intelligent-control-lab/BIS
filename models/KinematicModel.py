@@ -55,6 +55,7 @@ class KinematicModel:
         self.m = matrix(zeros((6,1)))
         self.m_his = repmat(self.m, 1, 50)
         self.x_pred = zeros((self.n,1))
+        self.trace = repmat(self.get_P(), 1, 200)
 
         self.goal_achieved = 0
 
@@ -128,7 +129,9 @@ class KinematicModel:
             self.last_collision_time = self.time
         
         if v_op < 0:
-            self.score['safety'] = self.score['safety'] + max(0, -np.log(dis / (2 * self.safe_dis) + 1e-20)) * abs(v_op);
+            self.score['safety'] = self.score['safety'] + min(0, np.log(dis / (2 * self.safe_dis) + 1e-20)) * abs(v_op);
+
+            # self.score['safety'] = self.score['safety'] + min(2 * self.safe_dis, dis);
         
         self.score['nearest_dis'] = min(self.score['nearest_dis'], dis)
 
@@ -142,7 +145,10 @@ class KinematicModel:
         self.kalman_estimate_state()
         self.update_m(obstacle.m)
         self.calc_control(obstacle)
+        self.update_trace()
 
+    def update_trace(self):
+        self.trace = np.concatenate([self.trace[:,1:], self.get_P()],axis=1)
         
     def update_m(self, Mh):
         self.m = self.get_closest_X(Mh)
@@ -198,6 +204,7 @@ class KinematicModel:
         self.x = self.filt_x(self.x)
         self.x_his = np.concatenate([self.x_his[:,1:], self.x],axis=1)
         self.m_his = np.concatenate([self.m_his[:,1:], self.m], axis=1)
+
     def init_x(self, init_state):
         pass
     def set_saturation(self):
@@ -238,6 +245,22 @@ class KinematicModel:
         ret.setPos(pos[0], pos[1], pos[2])
         return ret;
 
+    def draw_trace(self):
+        if hasattr(self, 'trace_line_handle'):
+            self.trace_line_handle.removeNode()
+
+        segs = LineSegs( )
+        segs.setThickness( 5.0 )
+        segs.setColor(self.color[0], self.color[1], self.color[2], 0.5)
+        
+        p_from = LVector3f(self.trace[0,0], self.trace[1,0], self.trace[2,0])
+        segs.moveTo( p_from )
+        for i in range(np.shape(self.trace)[1]):
+            p_to = LVector3f(self.trace[0,i], self.trace[1,i], self.trace[2,i])
+            segs.drawTo( p_to )
+        trace_line = segs.create( )
+
+        self.trace_line_handle = self.render.attachNewNode(trace_line);
 
     def draw_arrow(self, p_from, p_to, color):
         segs = LineSegs( )
@@ -264,7 +287,9 @@ class KinematicModel:
         vdata.setVertex(1, p_to)  
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
-        pass
+        self.color = color
+        self.render = render
+
     def redraw_model(self):
         pass
     def model_auxiliary(self):

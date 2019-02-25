@@ -207,7 +207,8 @@ class SCARA(KinematicModel):
         return u0;
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
-        self.render = render
+        KinematicModel.load_model(self, render, loader, color, scale)
+
         pos = [-4, -4, 0]
         theta1 = 0;
         theta2 = 0;
@@ -239,7 +240,7 @@ class SCARA(KinematicModel):
         self.robot_arm1 = pivot1
         self.robot_arm2 = pivot2
 
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], [0.1, 0.5, 0.8, 0.5], scale);
+        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
         
         
     def redraw_model(self):

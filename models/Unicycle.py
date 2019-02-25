@@ -133,14 +133,15 @@ class Unicycle(KinematicModel):
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
         
-        self.render = render
+        KinematicModel.load_model(self, render, loader, color, scale)
+
         pos = list(self.get_P()[:,0])
         self.robot_sphere = loader.loadModel("resource/cube")
         self.robot_sphere.reparentTo(render)
         self.robot_sphere.setColor(color[0], color[1], color[2], color[3]);
         self.robot_sphere.setScale(scale,0.1,scale);
         self.robot_sphere.setPos(pos[0], pos[1], pos[2]);
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], [0.1, 0.5, 0.8, 0.5], scale);
+        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
 
         
     def redraw_model(self):

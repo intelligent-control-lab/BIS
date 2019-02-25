@@ -1,4 +1,7 @@
+"""
+This script generates random data on given models
 
+"""
 import sys, glob, os
 import pickle
 from agents import *

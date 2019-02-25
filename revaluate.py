@@ -29,12 +29,7 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
     save_dir = os.path.join('eval_results', model, algorithm, save_postfix)
     
     # Avoid repetition, which also means if you updated some algorithm, you need to delete former results manually to see the changes.
-    if glob.glob1(save_dir, 'total_score'):
-        f = open(os.path.join(save_dir, 'total_score'), 'rb')
-        total_score = pickle.load(f)
-        # print('total_score')
-        # print(total_score)
-        return total_score
+    
     
     dT = 0.02
     
@@ -53,6 +48,13 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
     n = len(names)
     for name in names:
         # print(name)
+        save_path = os.path.join(save_dir, name.replace('data', 'result'))
+        if os.path.exists(save_path):
+            f = open(save_path, 'rb')
+            record = pickle.load(f)
+
+        else:
+
         f = open(os.path.join(data_dir, name), 'rb')
 
         record = pickle.load(f)
@@ -79,6 +81,9 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
             robot.move()
             record.robot_moves[:, t] = robot.x
 
+            record.robot_closest_P[:, t] = robot.m
+            record.human_closest_P[:, t] = human.m
+
         if graphics:
             
             try:
@@ -95,10 +100,10 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
             else:
                 total_score[k] = total_score[k] + robot.score[k] / n
 
-        # print('score[efficiency]')
-        # print(robot.score['efficiency'])
-        # print('score[collision_cnt]')
-        # print(robot.score['collision_cnt'])
+        print('score[efficiency]')
+        print(robot.score['efficiency'])
+        print('score[collision_cnt]')
+        print(robot.score['collision_cnt'])
     # print('total_score')
     # print(total_score)
     print('total_score[efficiency]')

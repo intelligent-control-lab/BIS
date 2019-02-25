@@ -349,7 +349,7 @@ class RobotArm(KinematicModel):
         return u0;
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
-        self.render = render
+        KinematicModel.load_model(self, render, loader, color, scale)
 
         pos = self.base
         
@@ -403,7 +403,7 @@ class RobotArm(KinematicModel):
         self.robot_arm2 = pivot2
         self.robot_arm3 = pivot3
         
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], [0.1, 0.5, 0.8, 0.5], scale);
+        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
         
 
 

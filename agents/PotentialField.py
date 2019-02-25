@@ -8,7 +8,7 @@ from numpy.linalg import norm, inv
 class PotentialField(MobileAgent):
 
     d_min = 1 # distance to trigger static potential field
-    lambd = 0.3 # strength of the entire field
+    lambd = 5 # strength of the entire field
     beta = 2
     eta = 3
 
@@ -90,13 +90,16 @@ class PotentialField(MobileAgent):
         # print(m_v_idx, x_v_idx)
         # print('p_Mr_p_Xr[m_v_idx, :].T')
         # print(p_Mr_p_Xr[m_v_idx, :].T)
+        # print('fu.T')
+        # print(fu.T)
         # print('p_Mr_p_Xr.T')
         # print(p_Mr_p_Xr.T)
-        # print('p_Mr_p_Xr[m_v_idx, x_v_idx].T')
-        # print(p_Mr_p_Xr[np.ix_(m_v_idx, x_v_idx)].T)
-        # print('u_Mr')
-        # print(u_Mr)
-        u_Xr = p_Mr_p_Xr[np.ix_(m_v_idx, x_v_idx)].T * u_Mr
+        # print('p_Mr_p_Xr.T')
+        # print(p_Mr_p_Xr.T)
+        # print('np.vstack([np.zeros(m_dim),u_Mr])')
+        # print(np.vstack([np.zeros((m_dim,1)),u_Mr]))
+        
+        u_Xr = fu.T * p_Mr_p_Xr.T * np.vstack([np.zeros((m_dim,1)),u_Mr])
         # print('u_Xr')
         # print(u_Xr)
 

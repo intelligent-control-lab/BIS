@@ -96,9 +96,9 @@ class Ball(KinematicModel):
 
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
-        self.render = render
-        self.robot_sphere = self.add_sphere(list(self.get_P()[:,0]), [0.1, 0.5, 0.8, 0.8], scale);
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], [0.1, 0.5, 0.8, 0.5], scale);
+        KinematicModel.load_model(self, render, loader, color, scale)
+        self.robot_sphere = self.add_sphere(list(self.get_P()[:,0]), color, scale);
+        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
 
     
     def redraw_model(self):
@@ -114,6 +114,7 @@ class Ball(KinematicModel):
             self.move_seg(self.robot_u, list(self.get_P()[:,0]), list(self.u[:,0])+[0])
             self.remove_half_planes()
             self.add_half_planes()
+
 
     def draw_half_plane(self, coef):
         segs = LineSegs( )
