@@ -194,6 +194,13 @@ class KinematicModel:
         max_u = self.max_u
         self.u = self.agent.calc_control_input(dT, goal, fx, fu, Xr, Xh, dot_Xr, dot_Xh, Mr, Mh, p_Mr_p_Xr, p_Mh_p_Xh, u0, min_u, max_u);
         self.u = self.filt_u(self.u)
+        print('========')
+        print('u0')
+        print(u0)
+        print('self.u')
+        print(self.u)
+        print('self.x')
+        print(self.x)
 
     def dot_X(self):
         return (self.x - self.x_his[:,-2]) / self.dT

@@ -114,8 +114,11 @@ class Unicycle(KinematicModel):
         
         d_theta = arctan2(dp[1], dp[0]) - theta_R
 
-        # if abs(d_theta) > pi:
-        #     d_theta = d_theta % pi
+        if abs(d_theta) > pi:
+            while d_theta > pi:
+                d_theta = d_theta - 2 * pi;
+            while d_theta < -pi:
+                d_theta = d_theta + 2 * pi;
 
         # if d_theta > pi/2 :
         #     d_theta = d_theta % (pi/2)

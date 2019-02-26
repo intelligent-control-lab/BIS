@@ -6,7 +6,7 @@ from utils.World import *
 
 # instantiate the class
 dT = 0.02
-robot = RobotArm(PotentialField(), dT);
-human = HumanBall2D(MobileAgent(), dT);
+robot = Unicycle(PotentialField(), dT);
+human = HumanBall2D(MobileAgent(), dT, auto = False);
 w = World(dT, human, robot)
 base.run()
