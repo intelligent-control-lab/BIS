@@ -1,9 +1,9 @@
-import os, sys, glob
 import pickle
+import os, sys, glob
 import numpy as np
 from models import *
 from agents import *
-from utils.World import World
+# from utils.World import World
 
 def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None):
     """This function evaluate a algorithm's performance on a given model.
@@ -79,13 +79,13 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
             robot.move()
             record.robot_moves[:, t] = robot.x
 
-        if graphics:
+        # if graphics:
             
-            try:
-                w = World(record.dT, human, robot, record)
-                base.run()
-            except SystemExit as e:
-                pass
+        #     try:
+        #         w = World(record.dT, human, robot, record)
+        #         base.run()
+        #     except SystemExit as e:
+        #         pass
 
 
         save_data(save_dir, name.replace('data', 'result'), record)

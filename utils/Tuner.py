@@ -36,13 +36,12 @@ class Tuner():
             # self.safety.append(-score['safety'])
             # self.efficiency.append(score['efficiency'])
             # self.collision_cnt.append(score['collision_cnt'])
+            print(-score['safety'])
             return (-score['safety'], score['efficiency'], score['collision_cnt'], param_str)
             
  
     def tune(self):
         self.dfs(0, '', dict())
-
-        
         num_cores = mp.cpu_count()
         pool = mp.Pool(num_cores)
         self.result = pool.map(self.processInput, self.param_combs)
