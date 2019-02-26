@@ -5,12 +5,12 @@ def leaderboard():
     """
     This function generates roc curves for given models based on given parameter ranges
     """
-    models = ['Unicycle']
+    models = ['Ball3D']
     settings = [ \
-        ('BarrierFunction',  {'d_min': np.arange(2, 3, 1)}),\
-        ('SafeSet',          {'d_min': np.arange(2, 3, 1)}),\
-        ('PotentialField',   {'d_min': np.arange(2, 3, 1)}),\
-        ('SlidingMode',      {'d_min': np.arange(2, 3, 1)}),\
+        ('BarrierFunction',  {'d_min': np.arange(1, 5, 1)}),\
+        ('SafeSet',          {'d_min': np.arange(1, 5, 1)}),\
+        ('PotentialField',   {'d_min': np.arange(1, 5, 1)}),\
+        ('SlidingMode',      {'d_min': np.arange(1, 5, 1)}),\
     ]
 
     # models = ['SCARA','RobotArm']
