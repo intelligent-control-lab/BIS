@@ -46,7 +46,4 @@ class Tuner():
         num_cores = mp.cpu_count()
         pool = mp.Pool(num_cores)
         self.result = pool.map(self.processInput, self.param_combs)
-        print('mother')
-        print(len(self.result))
-        print(self.result)
         return self.result
