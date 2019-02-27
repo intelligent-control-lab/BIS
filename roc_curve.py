@@ -4,6 +4,7 @@ from agents import *
 from models import *
 from utils.Tuner import Tuner
 from matplotlib2tikz import save as tikz_save
+from scipy.spatial import ConvexHull
 
 def roc_curve(models, settings):
 
@@ -17,11 +18,13 @@ def roc_curve(models, settings):
             print(args)
             tuner = Tuner(model ,args[0], args[1])
             result = tuner.tune()
-            print('result')
-            print(result)
             result.sort(key=lambda tup: tup[0])
+
+            print('result')
+            print(*result, sep = "\n")
+
             safety, efficiency, collision, param_set = tuple(map(list, zip(*result)))
-            safety = safety / np.max(safety)
+            
             first_safe = 0
             if not (sum(collision) == 0):
                 first_safe = [i for i, e in enumerate(collision) if abs(e) > 1e-9][-1]+1
@@ -37,13 +40,31 @@ def roc_curve(models, settings):
             print('Best performance efficiency')
             print(efficiency[first_safe])
             
-            line, = plt.plot(safety, efficiency, label=args[0])
+            
+            # line, = plt.plot(safety, efficiency, label=args[0])
             # plt.scatter(safety, efficiency, s =s, marker='o')
             # if args[0] == 'BarrierFunction':
             #     for i, txt in enumerate(param_set):
             #         plt.annotate(round(collision[i],2), (safety[i], efficiency[i]), size=5)
+            safety = np.array(safety)
+            efficiency = np.array(efficiency)
+
+
+            plt.scatter(safety, efficiency, label=args[0])
+
+            points = np.hstack(safety, efficiency)
+            hull = ConvexHull(points)
+            print('np.shape(points)')
+            print(np.shape(points))
+
+
             ret[model][args[0]] = auc
+            x = np.linspace(-20, -0.01, 100)
+
+            plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
+        plt.xlim(-20, 0)
+        plt.ylim(0, 10)
         fig.legend()
         plt.xlabel('Safety')
         plt.ylabel('Efficiency')

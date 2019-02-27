@@ -29,6 +29,11 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
     save_dir = os.path.join('eval_results', model, algorithm, save_postfix)
     
     # Avoid repetition, which also means if you updated some algorithm, you need to delete former results manually to see the changes.
+
+    if robot is None:
+        robot = eval(model + '(' + algorithm + '(), dT)')
+    
+        
     if glob.glob1(save_dir, 'total_score'):
         f = open(os.path.join(save_dir, 'total_score'), 'rb')
         total_score = pickle.load(f)
@@ -37,10 +42,6 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
         return total_score
     
     dT = 0.02
-    
-    if robot is None:
-        robot = eval(model + '(' + algorithm + '(), dT)')
-    
     
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)

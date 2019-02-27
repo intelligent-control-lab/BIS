@@ -6,11 +6,11 @@ from numpy.random import rand, randn
 from numpy.linalg import norm, inv
 from cvxopt import solvers, matrix
 
-class SafeSet(MobileAgent):
+class SublevelSafeSet(MobileAgent):
 
     k_v = 2 # factor for punish relative velocity
     d_min = 2 # min distance to react
-    yita = 10 # safety derivative slacking term
+    gamma = 10 # safety derivative slacking term
     lambd = 0.5 # uncertainty margin
     half_plane_ABC = []
 
@@ -71,7 +71,7 @@ class SafeSet(MobileAgent):
         p_d_p_Xh = p_Mh_p_Xh.T * p_d_p_Mh
         
 
-        phi = self.d_min**2 + self.yita * dT + self.lambd * dT - d**2 - self.k_v * dot_d;
+        phi = self.d_min**2 + self.lambd * dT - d**2 - self.k_v * dot_d;
 
         p_phi_p_Xr = - 2 * d * p_d_p_Xr - self.k_v * p_dot_d_p_Xr;
         p_phi_p_Xh = - 2 * d * p_d_p_Xh - self.k_v * p_dot_d_p_Xh;
@@ -80,11 +80,12 @@ class SafeSet(MobileAgent):
 
 
         L = p_phi_p_Xr.T * fu;
-        S = - self.yita - self.lambd - p_phi_p_Xh.T * dot_Xh - p_phi_p_Xr.T * fx;
+        S = - self.gamma * phi - p_phi_p_Xh.T * dot_Xh - p_phi_p_Xr.T * fx;
         
         u = u0;
 
-        if phi <= 0 or asscalar(L * u0) < asscalar(S):
+        # if phi <= 0 or asscalar(L * u0) < asscalar(S):
+        if asscalar(L * u0) < asscalar(S):
             u = u0;
         else:
             try:

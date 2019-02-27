@@ -6,12 +6,13 @@ from numpy import zeros, eye, ones, sqrt, asscalar, log
 from numpy.random import rand, randn
 from numpy.linalg import norm, inv
 
-class BarrierFunction(MobileAgent):
+class SafeSublevelSet(MobileAgent):
 
-    t = 0.5
     gamma = 5
     half_plane_ABC = []
-    d_min = 1
+    k_v = 2 # factor for punish relative velocity
+    d_min = 2 # min distance to react
+    lambd = 0.5 # uncertainty margin
 
     def __init__(self):
         
@@ -66,36 +67,26 @@ class BarrierFunction(MobileAgent):
         # print('-=-=-=-=-=')
 
     
-        h = (d + dot_d * self.t - self.d_min)
-        h = 1e-10 if h < 0 else h
-        p_h_p_Mr = (p_d_p_Mr + p_dot_d_p_Mr * self.t)
-        p_h_p_Mh = -(p_d_p_Mr + p_dot_d_p_Mr * self.t)
+        h = self.d_min**2 + self.lambd * dT - d**2 - self.k_v * dot_d;
+
+        p_h_p_Mr = (-2 * p_d_p_Mr - p_dot_d_p_Mr * self.k_v)
+        p_h_p_Mh = -p_h_p_Mr
         
-        # if dot_d > 0:
-        #     h = (d - self.d_min)
-        #     h = 1e-10 if h < 0 else h
-        #     p_h_p_Mr = p_d_p_Mr
-        #     p_h_p_Mh = -p_d_p_Mr
-
-        # print('h')
-        # print(h)
-        # print('d')
-        # print(d)
-        # print('dot_d')
-        # print(dot_d)
-
-        B = -1*log(h / (1+h))
-        p_B_p_h = (-1 / (h+1) / h)
+        
+        B = h
+        p_B_p_h = 1
 
         p_B_p_Xr = p_B_p_h * p_Mr_p_Xr.T * p_h_p_Mr
         p_B_p_Xh = p_B_p_h * p_Mh_p_Xh.T * p_h_p_Mh
         LfB = p_B_p_Xr.T * fx
         LgB = p_B_p_Xr.T * fu
         A = matrix(LgB)
-        b = matrix(self.gamma / B - LfB - p_B_p_Xh.T * dot_Xh)
+        b = matrix(- self.gamma * B - LfB - p_B_p_Xh.T * dot_Xh)
         # print('p_B_p_Xh.T * dot_Xh')
         # print(p_B_p_Xh.T * dot_Xh)
 
+        if asscalar(LgB * u0) < asscalar(- self.gamma * B - LfB - p_B_p_Xh.T * dot_Xh):
+            return u0
 
         A = A / abs(b)
         b = b / abs(b)

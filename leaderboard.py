@@ -7,11 +7,14 @@ def leaderboard():
     """
     models = ['Ball3D']
     settings = [ \
-        ('BarrierFunction',  {'d_min': np.arange(1, 5, 1)}),\
-        ('SafeSet',          {'d_min': np.arange(1, 5, 1)}),\
-        ('PotentialField',   {'d_min': np.arange(1, 5, 1)}),\
-        ('SlidingMode',      {'d_min': np.arange(1, 5, 1)}),\
+        ('SafeSet',          {'d_min': [1, 2, 3],  'yita': [1, 2, 4, 8], 'k_v': [1, 1.5, 2]}),\
+        ('SlidingMode',      {'d_min': [1, 2, 3, 4], 'k_v': [1, 1.5, 2], 'u_p': [1, 2, 5, 10]}),\
+        ('PotentialField',   {'d_min': [1, 2, 3, 4], 'lambd': [3, 5, 10, 15, 20]}),\
+        ('BarrierFunction',  {'d_min': [1, 2, 3],  't':[0.5, 1, 1.5, 2], 'gamma':[0.5, 1, 2, 3]}),\
+        ('SublevelSafeSet',  {'d_min': [1, 2, 3],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[0.5, 1, 2, 3, 5, 10]}),\
+        ('SafeSublevelSet',  {'d_min': [1, 2, 3],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[0.5, 1, 2]}),\
     ]
+
 
     # models = ['SCARA','RobotArm']
     # settings = [ \

@@ -9,7 +9,7 @@ class SmoothSafeSet(MobileAgent):
 
     D = 2 # safety index, d_min^2 + lamda*dT + eta*dT
     k_v = 2 # factor for punish relative velocity
-    d_min = 1
+    d_min = 2
     yita = 10
     lambd = 0.5
     alpha = 1

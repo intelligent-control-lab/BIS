@@ -7,8 +7,8 @@ from numpy.linalg import norm, inv
 
 class PotentialField(MobileAgent):
 
-    d_min = 1 # distance to trigger static potential field
-    lambd = 0.3 # strength of the entire field
+    d_min = 2 # distance to trigger static potential field
+    lambd = 5 # strength of the entire field
     beta = 2
     eta = 3
 
