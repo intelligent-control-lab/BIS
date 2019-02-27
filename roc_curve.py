@@ -5,15 +5,19 @@ from models import *
 from utils.Tuner import Tuner
 from matplotlib2tikz import save as tikz_save
 from scipy.spatial import ConvexHull
-
+from cycler import cycler
 def roc_curve(models, settings):
 
     ret = dict()
+
+    
+    c = 0
     for model in models:
 
         ret[model] = dict()
         fig = plt.figure() 
         for args in settings:
+            
             print('===============')
             print(args)
             tuner = Tuner(model ,args[0], args[1])
@@ -52,19 +56,31 @@ def roc_curve(models, settings):
 
             plt.scatter(safety, efficiency, label=args[0])
 
-            points = np.hstack(safety, efficiency)
-            hull = ConvexHull(points)
-            print('np.shape(points)')
-            print(np.shape(points))
+            p = np.vstack([safety, efficiency]).T
+            
+            hull = ConvexHull(p)
+            print('hull.simplices')
+            print(hull.simplices)
 
+            def calc_k(p):
+                if (p[1,0] - p[0,0]) == 0:
+                    return 1e9 if p[1,1] > p[0,1] else -1e9
+                return (p[1,1] - p[0,1]) / (p[1,0] - p[0,0])
+            hv = hull.vertices
+            hv = np.append(hv, hv[0])
+            for i in range(len(hv)-1):
+                k = p[hv[i+1], 0] - p[hv[i], 0]
+                if k <= 0:
+                    plt.plot(p[hv[i:i+2], 0], p[hv[i:i+2], 1], c='C'+str(c))
 
+            c += 1
             ret[model][args[0]] = auc
             x = np.linspace(-20, -0.01, 100)
 
-            plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
+            # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
-        plt.xlim(-20, 0)
-        plt.ylim(0, 10)
+        plt.xlim(-2, 0)
+        plt.ylim(0, 8)
         fig.legend()
         plt.xlabel('Safety')
         plt.ylabel('Efficiency')
