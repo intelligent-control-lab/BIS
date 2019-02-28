@@ -6,6 +6,7 @@ from utils.Tuner import Tuner
 from matplotlib2tikz import save as tikz_save
 from scipy.spatial import ConvexHull
 from cycler import cycler
+import shutil, os
 def roc_curve(models, settings):
 
     ret = dict()
@@ -38,14 +39,12 @@ def roc_curve(models, settings):
             efficiency = np.array(efficiency)
             if not (sum(collision) == 0):
                 first_safe = [i for i, e in enumerate(collision) if abs(e) > 1e-9][-1]+1
-                
-            if first_safe >= len(collision):
-                print(args[0]+' params range is too narrow. Safe params set can not be acquired.')
-                first_safe = len(collision)-1
-            else:
 
-                
-                nc_idx = np.where(collision < 5e-2)[0]
+            nc_idx = np.where(collision < 5e-2)[0]
+            if len(nc_idx) == 0:
+                print(args[0]+' params range is too narrow. Safe params set can not be acquired.')
+
+            else:
                 
                 hi = nc_idx[np.argmax(efficiency[nc_idx])]
                 print('Hybrid param set:')
@@ -55,6 +54,13 @@ def roc_curve(models, settings):
                 print('Hybrid performance efficiency')
                 print(efficiency[hi])
                 plt.scatter(safety[hi:hi+1], efficiency[hi:hi+1], c='C'+str(c), marker='P', s=200, zorder=10)
+                
+                print(os.path.join('eval_results', args[0], param_set[hi][:-2]))
+                csrc = os.path.join('eval_results', model, args[0], param_set[hi][:-2])
+                cdst = os.path.join('Hybrid_score_result', model, args[0]+'_'+param_set[hi][:-2])
+                
+                shutil.copytree(csrc, cdst)
+
                 
             s = [20 * (abs(x) < 1e-9) for x in collision]
             auc = sum([(efficiency[i]+efficiency[i+1])*(safety[i+1]-safety[i])/2 for i in range(first_safe, len(collision)-1) ])
