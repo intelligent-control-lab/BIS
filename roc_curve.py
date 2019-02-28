@@ -12,10 +12,13 @@ def roc_curve(models, settings):
 
     
     c = 0
+    
     for model in models:
 
         ret[model] = dict()
         fig = plt.figure() 
+        his = []
+        hie = []
         for args in settings:
             
             print('===============')
@@ -83,11 +86,17 @@ def roc_curve(models, settings):
                     idx.append(hv[i])
                     idx.append(hv[i+1])
 
-            plt.scatter(safety[idx], efficiency[idx], label=args[0], c='C'+str(c))
+            plt.scatter(safety[idx], efficiency[idx], label=args[0], c='C'+str(c), s=20)
+            print('hi')
+            print(safety[hi:hi+1])
+            his.append(safety[hi:hi+1])
+            hie.append(efficiency[hi:hi+1])
+            
             mask = np.ones(len(safety))
             mask[idx] = 0
             rest = np.where(mask)[0]
-            plt.scatter(safety[rest], efficiency[rest], c='C'+str(c), alpha=.4, linewidth=0)
+            plt.scatter(safety[rest], efficiency[rest], c='C'+str(c), alpha=.2, s=20, linewidth=0)
+            plt.scatter(safety[hi:hi+1], efficiency[hi:hi+1], c='C'+str(c), marker='P', s=200, zorder=10)
 
             c += 1
             ret[model][args[0]] = auc
@@ -96,6 +105,8 @@ def roc_curve(models, settings):
             # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
         # plt.xlim(-20, 0)
+
+
         plt.ylim(0, 10)
         fig.legend()
         plt.xlabel('Safety')
