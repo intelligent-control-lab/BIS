@@ -6,7 +6,7 @@ from utils.World import *
 
 # instantiate the class
 dT = 0.05
-robot = SCARA(SafeSet(), dT);
-human = HumanBall2D(MobileAgent(), dT);
+robot = RobotArm(SublevelSafeSet(), dT);
+human = HumanBall3D(MobileAgent(), dT);
 w = World(dT, human, robot)
 base.run()
