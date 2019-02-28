@@ -37,12 +37,21 @@ def roc_curve(models, settings):
                 first_safe = len(collision)-1
             s = [20 * (abs(x) < 1e-9) for x in collision]
             auc = sum([(efficiency[i]+efficiency[i+1])*(safety[i+1]-safety[i])/2 for i in range(first_safe, len(collision)-1) ])
-            print('Best param set:')
-            print(param_set[first_safe])
-            print('Best performance safety')
-            print(safety[first_safe])
-            print('Best performance efficiency')
-            print(efficiency[first_safe])
+
+            collision = np.array(collision)
+            safety = np.array(safety)
+            efficiency = np.array(efficiency)
+            nc_idx = np.where(collision < 5e-2)[0]
+            # print(nc_idx)
+            # print(efficiency[nc_idx])
+            # print(np.argmax(efficiency[nc_idx]))
+            hi = nc_idx[np.argmax(efficiency[nc_idx])]
+            print('Hybrid param set:')
+            print(param_set[hi])
+            print('Hybrid performance safety')
+            print(safety[hi])
+            print('Hybrid performance efficiency')
+            print(efficiency[hi])
             
             
             # line, = plt.plot(safety, efficiency, label=args[0])
@@ -50,8 +59,7 @@ def roc_curve(models, settings):
             # if args[0] == 'BarrierFunction':
             #     for i, txt in enumerate(param_set):
             #         plt.annotate(round(collision[i],2), (safety[i], efficiency[i]), size=5)
-            safety = np.array(safety)
-            efficiency = np.array(efficiency)
+            
 
 
             p = np.vstack([safety, efficiency]).T
@@ -87,7 +95,7 @@ def roc_curve(models, settings):
 
             # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
-        plt.xlim(-20, 0)
+        # plt.xlim(-20, 0)
         plt.ylim(0, 10)
         fig.legend()
         plt.xlabel('Safety')

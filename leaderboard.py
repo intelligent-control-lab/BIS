@@ -5,15 +5,15 @@ def leaderboard():
     """
     This function generates roc curves for given models based on given parameter ranges
     """
-    # models = ['Ball3D']
-    # settings = [ \
-    #     ('BarrierFunction',  {'d_min': [1, 2, 3],  't':[0.5, 0.75, 1, 1.5, 2], 'gamma':[1, 2, 3, 5]}),\
-    #     ('SlidingMode',      {'d_min': [1, 1.5, 2, 2.5, 3], 'k_v': [1, 1.5, 2], 'u_p': [1, 5, 10]}),\
-    #     ('PotentialField',   {'d_min': [1, 1.5, 2, 2.5, 3], 'lambd': [3, 5, 10, 15, 20]}),\
-    #     ('SafeSet',          {'d_min': [1, 1.5, 2, 2.5, 3],  'yita': [1, 2, 4, 8], 'k_v': [1, 1.5, 2]}),\
-    #     ('SublevelSafeSet',  {'d_min': [1, 2],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[1, 2, 5, 10]}),\
-    #     # ('SafeSublevelSet',  {'d_min': [1, 2, 3],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[0.5, 1, 2]}),\
-    # ]
+    models = ['Ball3D']
+    settings = [ \
+        ('BarrierFunction',  {'d_min': [1, 2, 3],  't':[0.5, 0.75, 1, 1.5, 2], 'gamma':[1, 2, 3, 5]}),\
+        ('SlidingMode',      {'d_min': [1, 1.5, 2, 2.5, 3], 'k_v': [1, 1.5, 2], 'u_p': [1, 5, 10]}),\
+        ('PotentialField',   {'d_min': [1, 1.5, 2, 2.5, 3], 'lambd': [3, 5, 10, 15, 20]}),\
+        ('SafeSet',          {'d_min': [1, 1.5, 2, 2.5, 3],  'yita': [1, 2, 4, 8], 'k_v': [1, 1.5, 2]}),\
+        ('SublevelSafeSet',  {'d_min': [1, 2],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[1, 2, 5, 10]}),\
+        # ('SafeSublevelSet',  {'d_min': [1, 2, 3],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[0.5, 1, 2]}),\
+    ]
 
     # models = ['Unicycle']
     # settings = [ \
@@ -34,39 +34,14 @@ def leaderboard():
     # ]
 
 
-    models = ['RobotArm']
-    settings = [ \
-        ('BarrierFunction',  {'d_min': [2, 3, 4, 5],  't':[0.5, 1, 2], 'gamma':[0.5, 1, 2, 3]}),\
-        ('SlidingMode',      {'d_min': [1, 1.5, 2, 2.5, 3], 'k_v': [1, 1.5, 2], 'u_p': [1, 5, 10]}),\
-        ('PotentialField',   {'d_min': [1, 1.5, 2, 2.5, 3], 'lambd': [0.1, 0.2, 0.3, 1, 2, 3]}),\
-        ('SafeSet',          {'d_min': [1, 1.5, 2, 2.5, 3],  'yita': [1, 2, 4, 8], 'k_v': [1, 1.5, 2]}),\
-        ('SublevelSafeSet',  {'d_min': [1, 2],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[1, 2, 5, 10]}),\
-    ]
-
-    # models = ['SCARA','RobotArm']
+    # models = ['RobotArm']
     # settings = [ \
-    #     ('BarrierFunction',  {'d_min': np.arange(0, 5, 1.0), 't': np.arange(0.6, 3.0, 0.4)}),\
-    #     ('SafeSet',          {'d_min': np.arange(0, 5, 1.0), 'yita': np.arange(3, 10, 2.0)}),\
-    #     ('PotentialField',   {'d_min': np.arange(0, 5, 1.0), 'lambd': np.arange(0.2, 3, 0.2)}),\
-    #     # ('PotentialField',   {'d_min': np.arange(0, 5, 0.5), 'lambd': np.arange(1, 20, 2.0)}),\
-    #     ('SlidingMode',      {'d_min': np.arange(0, 5, 1.0)}),\
-    # ];
-
-    # models = ['Ball3D','Unicycle']
-    # settings = [ \
-    #     ('BarrierFunction',  {'d_min': np.arange(0, 5, 0.5), 't': np.arange(0.2, 2.0, 0.2)}),\
-    #     ('SafeSet',          {'d_min': np.arange(0, 5, 0.5), 'yita': np.arange(1 , 10, 1.0)}),\
-    #     ('PotentialField',   {'d_min': np.arange(0, 5, 0.5), 'lambd': np.arange(1, 20, 2.0)}),\
-    #     ('SlidingMode',      {'d_min': np.arange(0, 5, 0.5)}),\
+    #     ('BarrierFunction',  {'d_min': [2, 3, 4, 5],  't':[0.5, 1, 2], 'gamma':[0.5, 1, 2, 3]}),\
+    #     ('SlidingMode',      {'d_min': [1, 1.5, 2, 2.5, 3], 'k_v': [1, 1.5, 2], 'u_p': [1, 5, 10]}),\
+    #     ('PotentialField',   {'d_min': [1, 1.5, 2, 2.5, 3], 'lambd': [0.1, 0.2, 0.3, 1, 2, 3]}),\
+    #     ('SafeSet',          {'d_min': [1, 1.5, 2, 2.5, 3],  'yita': [1, 2, 4, 8], 'k_v': [1, 1.5, 2]}),\
+    #     ('SublevelSafeSet',  {'d_min': [1, 2],  'k_v': [0.5, 1, 1.5, 2], 'gamma':[1, 2, 5, 10]}),\
     # ]
-
-    # models = ['Unicycle']#, 'SCARA', 'RobotArm']
-    # settings = [ \
-    #     ('SafeSet',          {'d_min': np.arange(0, 5, 1.0), 'yita': np.arange(2 ,10, 2.0)}),\
-    #     ('BarrierFunction',  {'d_min': np.arange(0, 5, 1.0), 't': np.arange(0.4, 2.0, 0.4)}),\
-    #     ('PotentialField',   {'d_min': np.arange(0, 5, 1.0), 'lambd': np.arange(2,10,2.0)}),\
-    #     ('SlidingMode',      {'d_min': np.arange(0, 5, 1.0)}),\
-    # ];
 
     ret = roc_curve(models, settings)
     # fig, axs =plt.subplots(len(models)+1,1)
