@@ -8,9 +8,9 @@ from cvxopt import solvers, matrix
 
 class SublevelSafeSet(MobileAgent):
 
-    k_v = 2 # factor for punish relative velocity
-    d_min = 2 # min distance to react
-    gamma = 10 # safety derivative slacking term
+    k_v = 0.5 # factor for punish relative velocity
+    d_min = 1.5 # min distance to react
+    gamma = 1 # safety derivative slacking term
     lambd = 0.5 # uncertainty margin
     half_plane_ABC = []
 
