@@ -103,11 +103,11 @@ class SCARA(KinematicModel):
         self.lm = [lm1, lm2]
         return self.m
 
-    def p_M_p_X(self):
+    def Jacobbian(self, lm):
         theta1 = self.x[0]
         theta2 = self.x[1]
-        lm1 = self.lm[0]
-        lm2 = self.lm[1]
+        lm1 = lm[0]
+        lm2 = lm[1]
         ret = matrix(zeros((6,4)));
         ret[0,0] = -lm1 * sin(theta1) - lm2 * sin(theta1 + theta2)
         ret[0,1] = -lm2 * sin(theta1 + theta2)
@@ -122,6 +122,12 @@ class SCARA(KinematicModel):
         ret[4,2] = lm1 * cos(theta1)
         ret[4,3] = lm2 * cos(theta1 + theta2)
         return ret
+
+    def p_M_p_X(self):
+        return self.Jacobbian(self.lm)
+    
+    def p_P_p_X(self):
+        return self.Jacobbian(self.l)
 
     #TODO: This should be modified
     def set_P(self, theta):
@@ -164,44 +170,53 @@ class SCARA(KinematicModel):
         x = np.maximum(x,  self.min_x);
         return x
 
-    def inv_J(self, p):
-        a = self.l[0]
-        b = self.l[1]
-        c = norm(p[[0,1]])
-        a_theta2 = arccos((a**2 + b**2 - c**2) / (2*a*b))
-        a_theta2 = a_theta2 - pi
-        d1 = arccos((a**2 + c**2 - b**2) / (2*a*c))
-        d2 = arctan2(p[1], p[0])
-        a_theta1 = d1 + d2;
+    def inv_J(self):
+        J = self.Jacobbian(self.l)
+        J = J[[0,1],:]
+        J = J[:,[0,1]]
+        return J.T
+        # a = self.l[0]
+        # b = self.l[1]
+        # c = norm(p[[0,1]])
+        # a_theta2 = arccos((a**2 + b**2 - c**2) / (2*a*b))
+        # a_theta2 = a_theta2 - pi
+        # d1 = arccos((a**2 + c**2 - b**2) / (2*a*c))
+        # d2 = arctan2(p[1], p[0])
+        # a_theta1 = d1 + d2;
 
-        c_theta1 = d2 - d1;
-        c_theta2 = 2*pi - a_theta2;
+        # c_theta1 = d2 - d1;
+        # c_theta2 = 2*pi - a_theta2;
         
-        if abs(a_theta1 - self.x[0]) > pi:
-            a_theta1 = (a_theta1 - 2*pi)
-        if abs(a_theta2 - self.x[1]) > pi:
-            a_theta2 = (a_theta2 - 2*pi)
+        # if abs(a_theta1 - self.x[0]) > pi:
+        #     a_theta1 = (a_theta1 - 2*pi)
+        # if abs(a_theta2 - self.x[1]) > pi:
+        #     a_theta2 = (a_theta2 - 2*pi)
 
-        if abs(c_theta1 - self.x[0]) > pi:
-            c_theta1 = (c_theta1 - 2*pi)
-        if abs(c_theta2 - self.x[1]) > pi:
-            c_theta2 = (c_theta2 - 2*pi)
+        # if abs(c_theta1 - self.x[0]) > pi:
+        #     c_theta1 = (c_theta1 - 2*pi)
+        # if abs(c_theta2 - self.x[1]) > pi:
+        #     c_theta2 = (c_theta2 - 2*pi)
         
-        dis1 = (self.x[0] - a_theta1)**2
-        dis2 = (self.x[0] - c_theta1)**2
+        # dis1 = (self.x[0] - a_theta1)**2
+        # dis2 = (self.x[0] - c_theta1)**2
 
         
-        if dis1 < dis2:
-            return [a_theta1, a_theta2]
-        else:
-            return [c_theta1, c_theta2]
+        # if dis1 < dis2:
+        #     return [a_theta1, a_theta2]
+        # else:
+        #     return [c_theta1, c_theta2]
 
     def u_ref(self):
+        inv_J = self.inv_J()
         dp = self.observe((self.goal - self.get_PV())[[0,1]]);
         dis = norm(dp);
         v = self.observe(self.get_V())[[0,1]];
 
-        u0 = np.vstack(self.inv_J(self.goal[[0,1],0] - self.base)) - self.observe(self.x[[0,1]]) - self.k_v * self.observe(self.x[[2,3]]);
+        if dis > 2:
+            u0 = 0.2 * inv_J * dp - self.k_v * self.observe(self.x[[2,3],0]);
+        else:
+            u0 = 0.1 * inv_J * dp - self.k_v * self.observe(self.x[[2,3],0]);
+        
 
 
         return u0;

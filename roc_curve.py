@@ -54,8 +54,6 @@ def roc_curve(models, settings):
             efficiency = np.array(efficiency)
 
 
-            plt.scatter(safety, efficiency, label=args[0])
-
             p = np.vstack([safety, efficiency]).T
             
             hull = ConvexHull(p)
@@ -68,10 +66,20 @@ def roc_curve(models, settings):
                 return (p[1,1] - p[0,1]) / (p[1,0] - p[0,0])
             hv = hull.vertices
             hv = np.append(hv, hv[0])
+
+            idx = []
             for i in range(len(hv)-1):
                 k = p[hv[i+1], 0] - p[hv[i], 0]
                 if k <= 0:
-                    plt.plot(p[hv[i:i+2], 0], p[hv[i:i+2], 1], c='C'+str(c))
+                    plt.plot(p[hv[i:i+2], 0], p[hv[i:i+2], 1], c='C'+str(c), linewidth=3)
+                    idx.append(hv[i])
+                    idx.append(hv[i+1])
+
+            plt.scatter(safety[idx], efficiency[idx], label=args[0], c='C'+str(c))
+            mask = np.ones(len(safety))
+            mask[idx] = 0
+            rest = np.where(mask)[0]
+            plt.scatter(safety[rest], efficiency[rest], c='C'+str(c), alpha=.4, linewidth=0)
 
             c += 1
             ret[model][args[0]] = auc
@@ -79,8 +87,8 @@ def roc_curve(models, settings):
 
             # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
-        plt.xlim(-2, 0)
-        plt.ylim(0, 8)
+        plt.xlim(-20, 0)
+        plt.ylim(0, 10)
         fig.legend()
         plt.xlabel('Safety')
         plt.ylabel('Efficiency')
