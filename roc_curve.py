@@ -33,28 +33,37 @@ def roc_curve(models, settings):
             safety, efficiency, collision, param_set = tuple(map(list, zip(*result)))
             
             first_safe = 0
-            if not (sum(collision) == 0):
-                first_safe = [i for i, e in enumerate(collision) if abs(e) > 1e-9][-1]+1
-            if first_safe >= len(collision):
-                print(args[0]+' params range is too narrow. Safe params set can not be acquired.')
-                first_safe = len(collision)-1
-            s = [20 * (abs(x) < 1e-9) for x in collision]
-            auc = sum([(efficiency[i]+efficiency[i+1])*(safety[i+1]-safety[i])/2 for i in range(first_safe, len(collision)-1) ])
-
             collision = np.array(collision)
             safety = np.array(safety)
             efficiency = np.array(efficiency)
-            nc_idx = np.where(collision < 5e-2)[0]
+            if not (sum(collision) == 0):
+                first_safe = [i for i, e in enumerate(collision) if abs(e) > 1e-9][-1]+1
+                
+            if first_safe >= len(collision):
+                print(args[0]+' params range is too narrow. Safe params set can not be acquired.')
+                first_safe = len(collision)-1
+            else:
+
+                
+                nc_idx = np.where(collision < 5e-2)[0]
+                
+                hi = nc_idx[np.argmax(efficiency[nc_idx])]
+                print('Hybrid param set:')
+                print(param_set[hi])
+                print('Hybrid performance safety')
+                print(safety[hi])
+                print('Hybrid performance efficiency')
+                print(efficiency[hi])
+                plt.scatter(safety[hi:hi+1], efficiency[hi:hi+1], c='C'+str(c), marker='P', s=200, zorder=10)
+                
+            s = [20 * (abs(x) < 1e-9) for x in collision]
+            auc = sum([(efficiency[i]+efficiency[i+1])*(safety[i+1]-safety[i])/2 for i in range(first_safe, len(collision)-1) ])
+
+            
             # print(nc_idx)
             # print(efficiency[nc_idx])
             # print(np.argmax(efficiency[nc_idx]))
-            hi = nc_idx[np.argmax(efficiency[nc_idx])]
-            print('Hybrid param set:')
-            print(param_set[hi])
-            print('Hybrid performance safety')
-            print(safety[hi])
-            print('Hybrid performance efficiency')
-            print(efficiency[hi])
+            
             
             
             # line, = plt.plot(safety, efficiency, label=args[0])
@@ -87,16 +96,11 @@ def roc_curve(models, settings):
                     idx.append(hv[i+1])
 
             plt.scatter(safety[idx], efficiency[idx], label=args[0], c='C'+str(c), s=20)
-            print('hi')
-            print(safety[hi:hi+1])
-            his.append(safety[hi:hi+1])
-            hie.append(efficiency[hi:hi+1])
-            
             mask = np.ones(len(safety))
             mask[idx] = 0
             rest = np.where(mask)[0]
             plt.scatter(safety[rest], efficiency[rest], c='C'+str(c), alpha=.2, s=20, linewidth=0)
-            plt.scatter(safety[hi:hi+1], efficiency[hi:hi+1], c='C'+str(c), marker='P', s=200, zorder=10)
+            
 
             c += 1
             ret[model][args[0]] = auc

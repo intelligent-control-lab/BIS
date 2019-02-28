@@ -47,7 +47,13 @@ for i in range(len(records)):
 
     plt.plot(d, c='C'+str(i), label=records[i].algorithm+'_dis', linestyle='-')
     plt.plot(dot_d, c='C'+str(i), label=records[i].algorithm+'_vel', linestyle='--')
-    plt.plot(range(-100,800,100), np.linspace(0,0,9),c='b', linestyle='-')
+    plt.plot(range(-100,800,100), np.linspace(0,0,9),c='black', linestyle='-')
     plt.xlim(0,200)
 plt.legend()    
-plt.show()
+# plt.show()
+
+# fig.legend()
+plt.xlabel('Frame(0.05s)')
+plt.ylabel('m(m/s)')
+# tikz_save(model+'.tex')
+fig.savefig('speed.pdf', bbox_inches='tight')
