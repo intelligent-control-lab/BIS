@@ -17,7 +17,11 @@ for i in range(1,len(sys.argv)):
     exec('robots.append(' + record.model + '(' + record.algorithm + '(), dT))');
     
 print(len(records))
+
 fig = plt.figure() 
+ax1=plt.subplot(2, 1, 1)
+ax2=plt.subplot(2, 1, 2)
+
 for i in range(len(records)):
     d = []
     dot_d = []
@@ -45,15 +49,22 @@ for i in range(len(records)):
     print(d[:10])
     print(dot_d[:10])
 
-    plt.plot(d, c='C'+str(i), label=records[i].algorithm+'_dis', linestyle='-')
-    plt.plot(dot_d, c='C'+str(i), label=records[i].algorithm+'_vel', linestyle='--')
-    plt.plot(range(-100,800,100), np.linspace(0,0,9),c='black', linestyle='-')
-    plt.xlim(0,200)
-plt.legend()    
-# plt.show()
+    
+    ax1.plot(d, c='C'+str(i), label=records[i].algorithm, linestyle='-')
+    
+    ax2.plot(dot_d, c='C'+str(i), label=records[i].algorithm, linestyle='--')
+    ax2.plot(range(-100,800,100), np.linspace(0,0,9),c='black', linestyle='-')
+    
 
+    
+ax1.legend()
+ax1.set_xlim(0,200)
+ax1.set_ylabel('m', fontsize = 20)
+# plt.show()
 # fig.legend()
-plt.xlabel('Frame(0.05s)')
-plt.ylabel('m(m/s)')
+
+ax2.set_xlim(0,200)
+ax2.set_xlabel('Frame (0.05s)', fontsize = 20)
+ax2.set_ylabel('m/s', fontsize = 20)
 # tikz_save(model+'.tex')
-fig.savefig('speed.pdf', bbox_inches='tight')
+fig.savefig('speed_profile.pdf', bbox_inches='tight')

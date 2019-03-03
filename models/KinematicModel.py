@@ -55,7 +55,7 @@ class KinematicModel:
         self.m = matrix(zeros((6,1)))
         self.m_his = repmat(self.m, 1, 50)
         self.x_pred = zeros((self.n,1))
-        self.trace = repmat(self.get_P(), 1, 200)
+        self.trace = repmat(self.get_P(), 1, 100)
 
         self.goal_achieved = 0
 
@@ -251,12 +251,13 @@ class KinematicModel:
 
         segs = LineSegs( )
         segs.setThickness( 5.0 )
-        segs.setColor(self.color[0], self.color[1], self.color[2], 0.5)
+        segs.setColor(self.color[0], self.color[1], self.color[2], 0)
         
         p_from = LVector3f(self.trace[0,0], self.trace[1,0], self.trace[2,0])
         segs.moveTo( p_from )
         for i in range(np.shape(self.trace)[1]):
             p_to = LVector3f(self.trace[0,i], self.trace[1,i], self.trace[2,i])
+            segs.setColor(self.color[0], self.color[1], self.color[2], 0)
             segs.drawTo( p_to )
         trace_line = segs.create( )
 
