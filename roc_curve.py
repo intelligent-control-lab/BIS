@@ -58,7 +58,8 @@ def roc_curve(models, settings):
                 print(os.path.join('eval_results', args[0], param_set[hi][:-2]))
                 csrc = os.path.join('eval_results', model, args[0], param_set[hi][:-2])
                 cdst = os.path.join('Hybrid_score_result', model, args[0]+'_'+param_set[hi][:-2])
-                
+                if os.path.exists(cdst):
+                    shutil.rmtree(cdst)
                 shutil.copytree(csrc, cdst)
 
                 
@@ -114,7 +115,7 @@ def roc_curve(models, settings):
 
             # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
-        # plt.xlim(-20, 0)
+        plt.xlim(-20, 0)
 
 
         plt.ylim(0, 10)
