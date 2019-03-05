@@ -119,9 +119,9 @@ def roc_curve(models, settings):
 
 
         plt.ylim(0, 10)
-        fig.legend()
-        plt.xlabel('Safety')
-        plt.ylabel('Efficiency')
+        fig.legend(fontsize=12)
+        plt.xlabel('Safety', fontsize=20)
+        plt.ylabel('Efficiency', fontsize=20)
         # tikz_save(model+'.tex')
         fig.savefig(model+'.pdf', bbox_inches='tight')
         # plt.show()
