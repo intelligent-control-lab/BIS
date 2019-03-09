@@ -134,22 +134,51 @@ class Unicycle(KinematicModel):
         
         return u0;
 
+    def load_R2D2(self, pos, color, scale):
+        ret = loader.loadModel("resource/R2D2/R2D2.obj")
+        ret.reparentTo(self.render)
+        ret.setColor(color[0], color[1], color[2], color[3]);
+        ret.setScale(scale / 30)
+        ret.setPos(pos[0], pos[1], pos[2]-0.3)
+        ret.setP(90)
+        ret.setR(90)
+
+        # tacc = loader.loadTexture('resource/R2D2/texture accesoires.jpg')
+        # ret.find('**/*').setTexture(tacc, 1)
+
+        # print(ret.get_children())
+        ttete = loader.loadTexture('resource/R2D2/texture tete.jpg')
+        ret.find('**/tete').setTexture(ttete, 1)
+
+        tcorps = loader.loadTexture('resource/R2D2/texture corps.jpg')
+        ret.find('**/corps').setTexture(tcorps, 1)
+
+        # taxe = loader.loadTexture('resource/R2D2/texture bras.jpg')
+        # ret.find('**/axes_bras*').setTexture(taxe, 1)
+
+        
+        pivot = self.render.attachNewNode("unicycle")
+        pivot.setPos(pos[0], pos[1], pos[2]) # Set location of pivot point
+        ret.wrtReparentTo(pivot) # Preserve absolute position
+
+        return pivot;
+
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
         
         KinematicModel.load_model(self, render, loader, color, scale)
 
         pos = list(self.get_P()[:,0])
-        self.robot_sphere = loader.loadModel("resource/cube")
-        self.robot_sphere.reparentTo(render)
-        self.robot_sphere.setColor(color[0], color[1], color[2], color[3]);
-        self.robot_sphere.setScale(scale,0.1,scale);
-        self.robot_sphere.setPos(pos[0], pos[1], pos[2]);
+
+        self.robot_model = self.load_R2D2(pos, color, scale)
+        
+        
+
         self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
 
         
     def redraw_model(self):
-        self.robot_sphere.setPos(self.get_P()[0], self.get_P()[1], 0);
-        self.robot_sphere.setH(self.x[3,0] / np.pi * 180);
+        self.robot_model.setPos(self.get_P()[0], self.get_P()[1], 0);
+        self.robot_model.setH(self.x[3,0] / np.pi * 180);
         self.robot_goal_sphere.setPos(self.goal[0], self.goal[1], 0)
 
     def model_auxiliary(self):

@@ -92,12 +92,29 @@ class Ball(KinematicModel):
 
 
 
+    def add_BB8(self, pos, color, scale=0.5):
+        ret = loader.loadModel("resource/BB8/bb8.obj")
+        ret.reparentTo(self.render)
+        ret.setTransparency(TransparencyAttrib.MAlpha)
+        ret.setColor(color[0], color[1], color[2], color[3])
+        ret.setP(90)
+        ret.setScale(scale / 50)
+        ret.setPos(pos[0], pos[1], pos[2]-0.5)
+        
+        body_diff = loader.loadTexture('resource/BB8/Body diff MAP.jpg')
+        tbd = TextureStage('body diff')
+        ret.setTexture(tbd, body_diff)
+        
+        pivot = render.attachNewNode("ball")
+        pivot.setPos(pos[0], pos[1], pos[2]) # Set location of pivot point
+        ret.wrtReparentTo(pivot) # Preserve absolute position
 
+        return pivot;
 
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
-        self.robot_sphere = self.add_sphere(list(self.get_P()[:,0]), color, scale);
+        self.robot_sphere = self.add_BB8(list(self.get_P()[:,0]), color, scale);
         self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
 
     

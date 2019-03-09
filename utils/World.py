@@ -127,7 +127,7 @@ class World(DirectObject):
             self.camera_h = self.camera_h + self.camera_h_v * self.dT
             self.camera_p = self.camera_p + self.camera_p_v * self.dT
 
-            r = 40
+            r = 20
             z = r * sin(abs(self.camera_p / 180 * pi))
             xy = r * cos(abs(self.camera_p / 180 * pi))
             x = xy * sin(self.camera_h / 180 * pi)
