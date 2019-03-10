@@ -5,8 +5,8 @@ from models import *
 from agents import *
 # from utils.World import World
 
-def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None):
-    """This function evaluate a algorithm's performance on a given model.
+def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None, passive = True):
+    """This function evaluate an algorithm's performance on a given model.
 
     Args:
         param1 (int): The first parameter.
@@ -26,7 +26,10 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
     
     if save_postfix is None:
         save_postfix = 'best'
+    
     save_dir = os.path.join('eval_results', model, algorithm, save_postfix)
+    if not passive:
+        save_dir = os.path.join('interactive_eval_results', model, algorithm, save_postfix)
     
     # Avoid repetition, which also means if you updated some algorithm, you need to delete former results manually to see the changes.
 
@@ -59,10 +62,18 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
         record = pickle.load(f)
         record.robot_moves = np.matrix(np.zeros((np.shape(robot.x)[0], record.tot)))
         record.cnt = 0
-        if robot.is_2D:
-            human = HumanBall2D(MobileAgent(), dT)
+
+        if passive:
+            if robot.is_2D:
+                human = HumanBall2D(MobileAgent(), dT)
+            else:
+                human = HumanBall3D(MobileAgent(), dT)
         else:
-            human = HumanBall3D(MobileAgent(), dT)
+            if robot.is_2D:
+                human = InteractiveHumanBall2D(SafeSet(d_min=1, k_v=1), dT)
+            else:
+                human = InteractiveHumanBall3D(SafeSet(d_min=1, k_v=1), dT)
+
 
         #Make sure all the algorithms have same goal sequence
         human.reset(record.dT, record.human_goals)
@@ -75,7 +86,15 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
 
         for t in range(record.tot):
             human.update(robot)
-            human.move(*record.human_moves[:,t])
+            if passive:
+                human.move(*record.human_moves[:,t])
+            else:
+                human.move()
+                if np.shape(human.x)[0] == 4:
+                    record.human_moves[:, t] = np.vstack([human.x[[0,1]], 0, human.x[[2,3]], 0])
+                else:
+                    record.human_moves[:, t] = human.x
+
             robot.update(human)
             robot.move()
             record.robot_moves[:, t] = robot.x
@@ -95,6 +114,9 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
                 total_score[k] = robot.score[k] / n
             else:
                 total_score[k] = total_score[k] + robot.score[k] / n
+
+        if not passive:
+            total_score['efficiency'] += human.score['efficiency'] / n
 
         # print('score[efficiency]')
         # print(robot.score['efficiency'])

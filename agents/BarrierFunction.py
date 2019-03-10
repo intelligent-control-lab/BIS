@@ -9,9 +9,9 @@ from numpy.linalg import norm, inv
 class BarrierFunction(MobileAgent):
 
     t = 0.5
-    gamma = 5
+    gamma = 2
     half_plane_ABC = []
-    d_min = 1
+    d_min = 2
 
     def __init__(self):
         
@@ -66,10 +66,10 @@ class BarrierFunction(MobileAgent):
         # print('-=-=-=-=-=')
 
     
-        h = (d + dot_d * self.t - self.d_min)
-        h = 1e-10 if h < 0 else h
-        p_h_p_Mr = (p_d_p_Mr + p_dot_d_p_Mr * self.t)
-        p_h_p_Mh = -(p_d_p_Mr + p_dot_d_p_Mr * self.t)
+        h = (d ** 2 + dot_d * self.t - self.d_min)
+        h = 1e-100 if h < 0 else h
+        p_h_p_Mr = (2 * d * p_d_p_Mr + p_dot_d_p_Mr * self.t)
+        p_h_p_Mh = -p_h_p_Mr
         
         # if dot_d > 0:
         #     h = (d - self.d_min)
@@ -184,6 +184,12 @@ class BarrierFunction(MobileAgent):
         # print(LfB + LgB * u)
         # print('gamma / B')
         # print(self.gamma / B)
+        # L = LgB;
+        # S = self.gamma/B - LfB - p_B_p_Xh.T * dot_Xh;
+        # if asscalar(L * u0) < asscalar(S):
+        #     u = u0;
+        # else:
+        #     u = u0 - (asscalar(L * u0 - S) * L.T / asscalar(L * L.T));
 
 
         # print('u0')

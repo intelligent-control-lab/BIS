@@ -5,5 +5,8 @@ from .SlidingMode import SlidingMode
 from .SmoothSafeSet import SmoothSafeSet
 from .PotentialField import PotentialField
 from .BarrierFunction import BarrierFunction
+from .ZBF import ZBF
+from .ZBF_as import ZBF_as
 from .SafeSublevelSet import SafeSublevelSet
 from .SublevelSafeSet import SublevelSafeSet
+from .Human import Human

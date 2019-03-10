@@ -8,7 +8,7 @@ from itertools import product
 
 class Tuner():
 
-    def __init__(self, model, algorithm, params_dict):
+    def __init__(self, model, algorithm, params_dict, passive=True):
         self.safety = []
         self.efficiency = []
         self.collision_cnt = []
@@ -21,6 +21,7 @@ class Tuner():
         self.robot = eval(model + '(' + algorithm + '(), 0.02)')
         self.param_combs = list()
         self.robots = list()
+        self.passive = passive
         
     def dfs(self, idx, param_str, param_set, robot):
         
@@ -37,7 +38,7 @@ class Tuner():
             self.dfs(idx+1, param_str+self.params[idx]+'='+str(p)+'__', param_set, new_robot)
     
     def processInput(self, param_str, robot):
-            score = evaluate(self.model, self.algorithm, False, robot, param_str[:-2])
+            score = evaluate(self.model, self.algorithm, False, robot, param_str[:-2], self.passive)
             # self.safety.append(-score['safety'])
             # self.efficiency.append(score['efficiency'])
             # self.collision_cnt.append(score['collision_cnt'])

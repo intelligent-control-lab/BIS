@@ -25,6 +25,7 @@ class Ball(KinematicModel):
         self.set_V(x[[2,3]])
         
         self.u = matrix(zeros((2,1)))
+        self.m = self.get_PV()
 
     def set_saturation(self):
         self.max_u =  matrix([[self.max_a], [self.max_a]])

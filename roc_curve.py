@@ -7,10 +7,9 @@ from matplotlib2tikz import save as tikz_save
 from scipy.spatial import ConvexHull
 from cycler import cycler
 import shutil, os
-def roc_curve(models, settings):
+def roc_curve(models, settings, passive = True):
 
     ret = dict()
-
     
     c = 0
     
@@ -24,7 +23,7 @@ def roc_curve(models, settings):
             
             print('===============')
             print(args)
-            tuner = Tuner(model ,args[0], args[1])
+            tuner = Tuner(model ,args[0], args[1], passive)
             result = tuner.tune()
             result.sort(key=lambda tup: tup[0])
 
@@ -84,8 +83,6 @@ def roc_curve(models, settings):
             p = np.vstack([safety, efficiency]).T
             
             hull = ConvexHull(p)
-            print('hull.simplices')
-            print(hull.simplices)
 
             def calc_k(p):
                 if (p[1,0] - p[0,0]) == 0:
@@ -115,7 +112,7 @@ def roc_curve(models, settings):
 
             # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
             #{'safety':safety[first_safe], 'efficiency':efficiency[first_safe]}
-        plt.xlim(-20, 0)
+        # plt.xlim(-20, 0)
 
 
         plt.ylim(0, 10)
@@ -123,7 +120,10 @@ def roc_curve(models, settings):
         plt.xlabel('Safety', fontsize=20)
         plt.ylabel('Efficiency', fontsize=20)
         # tikz_save(model+'.tex')
-        fig.savefig(model+'.pdf', bbox_inches='tight')
+        save_name = model+'.pdf'
+        if not passive:
+            save_name = 'interactive_' + save_name
+        fig.savefig(save_name, bbox_inches='tight')
         # plt.show()
 
     return ret

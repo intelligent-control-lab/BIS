@@ -15,10 +15,10 @@ class RobotArm(KinematicModel):
     k_v = 1
 
     def __init__(self, agent, dT, auto = True, init_state = [-4,-4, 0, 0, np.pi/2, -np.pi/2, -np.pi/2, 4.5, 4.5, 2]):
-        KinematicModel.__init__(self, init_state, agent, dT, auto)
         self.tao_1 = np.matrix([[1, 1, 1], [0, 1, 1], [0, 0, 1]])
         self.tao_2 = np.matrix([[0, 1, 1], [0, 1, 1], [0, 0, 1]])
         self.tao_3 = np.matrix([[0, 0, 1], [0, 0, 1], [0, 0, 1]])
+        KinematicModel.__init__(self, init_state, agent, dT, auto)
 
     def init_x(self, init_state):
         # x = [theta1, theta2, dot_theta1, dot_theta2]

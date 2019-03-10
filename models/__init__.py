@@ -6,3 +6,5 @@ from .SCARA import SCARA
 from .RobotArm import RobotArm
 from .HumanBall2D import HumanBall2D
 from .HumanBall3D import HumanBall3D
+from .InteractiveHumanBall2D import InteractiveHumanBall2D
+from .InteractiveHumanBall3D import InteractiveHumanBall3D

@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 eval_results/
+interactive_eval_results/
 .DS_Store
 
 __pycache__/

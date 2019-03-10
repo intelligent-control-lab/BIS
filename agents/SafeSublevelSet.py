@@ -69,7 +69,7 @@ class SafeSublevelSet(MobileAgent):
     
         h = self.d_min**2 + self.lambd * dT - d**2 - self.k_v * dot_d;
 
-        p_h_p_Mr = (-2 * p_d_p_Mr - p_dot_d_p_Mr * self.k_v)
+        p_h_p_Mr = (-2 * d * p_d_p_Mr - p_dot_d_p_Mr * self.k_v)
         p_h_p_Mh = -p_h_p_Mr
         
         

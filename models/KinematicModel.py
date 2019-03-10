@@ -42,6 +42,8 @@ class KinematicModel:
 
         self.reset(dT, goals)
 
+        self.get_closest_X(np.vstack([10,10,10,0,0,0]))
+
     def reset(self, dT, goals):
         self.dT = dT
         self.set_goals(goals)
@@ -67,6 +69,8 @@ class KinematicModel:
         self.score['nearest_dis'] = 1e9
         self.score['efficiency'] = 0
         self.predictability = 0
+
+        self.get_closest_X(np.vstack([10,10,10,0,0,0]))
 
     def set_goals(self, goals):
         self.goals = goals
@@ -128,7 +132,7 @@ class KinematicModel:
                 self.score['collision_cnt'] = self.score['collision_cnt'] + 1
             self.last_collision_time = self.time
         
-        if v_op < 0:
+        if v_op < 0 and dis < 2*self.safe_dis:
             self.score['safety'] = self.score['safety'] + min(0, np.log(dis / (2 * self.safe_dis) + 1e-20)) * abs(v_op);
 
             # self.score['safety'] = self.score['safety'] + min(2 * self.safe_dis, dis);
@@ -224,7 +228,7 @@ class KinematicModel:
         pass
     def B(self):
         pass
-    def get_closest_X(self, Xh):
+    def get_closest_X(self, Mh):
         pass
     def p_M_p_X(self): # p closest point p X
         pass

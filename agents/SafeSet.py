@@ -14,10 +14,13 @@ class SafeSet(MobileAgent):
     lambd = 0.5 # uncertainty margin
     half_plane_ABC = []
 
-    def __init__(self):
+    def __init__(self, d_min=2, k_v=2, yita=10):
         
         MobileAgent.__init__(self);
         self.safe_set = [0,0,0]
+        self.k_v = k_v
+        self.d_min = d_min
+        self.yita = yita
 
     def calc_control_input(self, dT, goal, fx, fu, Xr, Xh, dot_Xr, dot_Xh, Mr, Mh, p_Mr_p_Xr, p_Mh_p_Xh, u0, min_u, max_u):
         
