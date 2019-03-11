@@ -7,6 +7,7 @@ from matplotlib2tikz import save as tikz_save
 from scipy.spatial import ConvexHull
 from cycler import cycler
 import shutil, os
+import pickle
 def roc_curve(models, settings, passive = True):
 
     ret = dict()
@@ -32,6 +33,10 @@ def roc_curve(models, settings, passive = True):
 
             safety, efficiency, collision, param_set = tuple(map(list, zip(*result)))
             
+            cp = {'safety':safety, 'efficiency':efficiency, 'collision':collision, 'param_set':param_set}
+            cpf = open('drawing_data/'+model+'_'+args[0]+'_'+str(passive),'wb')
+            pickle.dump(cp, cpf)
+
             first_safe = 0
             collision = np.array(collision)
             safety = np.array(safety)
