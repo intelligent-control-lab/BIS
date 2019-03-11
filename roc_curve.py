@@ -115,7 +115,7 @@ def roc_curve(models, settings, passive = True):
         # plt.xlim(-20, 0)
 
 
-        plt.ylim(0, 10)
+        # plt.ylim(0, 10)
         fig.legend(fontsize=12)
         plt.xlabel('Safety', fontsize=20)
         plt.ylabel('Efficiency', fontsize=20)
