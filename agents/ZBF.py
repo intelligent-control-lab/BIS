@@ -112,11 +112,9 @@ class ZBF(MobileAgent):
         p = matrix(- 2 * u0)
 
         nu = np.shape(u0)[0]
-        G = matrix(np.vstack([eye(nu), -eye(nu)]))
-        r = matrix(np.vstack([max_u, -min_u]))
 
-        A = matrix([[A,G]])
-        b = matrix([[b,r]])
+        A = matrix([[A]])
+        b = matrix([[b]])
 
         u = u0
         self.fuck = False
