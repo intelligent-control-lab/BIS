@@ -14,6 +14,8 @@ class RobotArm(KinematicModel):
 
     k_v = 1
 
+    max_ev = 3
+
     def __init__(self, agent, dT, auto = True, init_state = [-4,-4, 0, 0, np.pi/2, -np.pi/2, -np.pi/2, 4.5, 4.5, 2]):
         self.tao_1 = np.matrix([[1, 1, 1], [0, 1, 1], [0, 0, 1]])
         self.tao_2 = np.matrix([[0, 1, 1], [0, 1, 1], [0, 0, 1]])
@@ -64,6 +66,26 @@ class RobotArm(KinematicModel):
         dot_x = -r * sin(alpha) * dot_alpha + cos(alpha) * dot_r
         dot_y =  r * cos(alpha) * dot_alpha + sin(alpha) * dot_r
         return np.vstack([dot_x, dot_y, dot_z]);
+
+    def get_ev(self, x):
+        alpha = x[0]
+        dot_alpha = x[4]
+        
+        theta1 = x[1]
+        theta2 = x[2]
+        theta3 = x[3]
+        cos_v = np.vstack([cos(theta1), cos(theta1+theta2), cos(theta1+theta2+theta3)])
+        sin_v = np.vstack([sin(theta1), sin(theta1+theta2), sin(theta1+theta2+theta3)])
+        dot_theta_v = x[[5,6,7],0]
+
+        r = self.l.T * cos_v
+        dot_z = dot_theta_v.T * self.tao_1 * (np.multiply(self.l,  cos_v))
+        dot_r = dot_theta_v.T * self.tao_1 * (np.multiply(self.l, -sin_v))
+        dot_x = -r * sin(alpha) * dot_alpha + cos(alpha) * dot_r
+        dot_y =  r * cos(alpha) * dot_alpha + sin(alpha) * dot_r
+
+        return norm(np.vstack([dot_x, dot_y, dot_z]));
+
         
     #return the postion of closest point to obstacle
     def get_closest_X(self, Mh):
@@ -294,6 +316,12 @@ class RobotArm(KinematicModel):
         
         x = np.minimum(x,  self.max_x);
         x = np.maximum(x,  self.min_x);
+
+        ev = norm(self.get_ev(x))
+        while ev > self.max_ev:
+            x[[4,5,6,7]] = x[[4,5,6,7]] * 0.9
+            ev = norm(self.get_ev(x))
+
         return x
 
     

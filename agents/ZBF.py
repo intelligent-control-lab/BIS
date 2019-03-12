@@ -13,10 +13,13 @@ class ZBF(MobileAgent):
     half_plane_ABC = []
     d_min = 3
 
-    def __init__(self):
+    def __init__(self, d_min=3, t=0.5, gamma=1):
         
         MobileAgent.__init__(self);
         self.safe_set = [0,0,0]
+        self.d_min = d_min
+        self.t = t
+        self.gamma = gamma
 
     def calc_control_input(self, dT, goal, fx, fu, Xr, Xh, dot_Xr, dot_Xh, Mr, Mh, p_Mr_p_Xr, p_Mh_p_Xh, u0, min_u, max_u):
         

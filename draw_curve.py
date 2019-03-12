@@ -13,12 +13,12 @@ import pickle
 
 x_lims = [-25, -30, -50, -30]
 models = ['Ball3D', 'Unicycle', 'SCARA', 'RobotArm']
-algorithms  = ['BarrierFunction', 'ZBF', 'ZBF_as', 'PotentialField', 'SlidingMode', 'SafeSet',  'SublevelSafeSet']
+algorithms  = ['RBF', 'ZBF', 'PotentialField', 'SlidingMode', 'SafeSet',  'SublevelSafeSet']
 labels = {  'PotentialField': 'PFM',
             'SafeSet':'SSA',
             'ZBF_as':'ZBF_as',
             'ZBF':'ZBF',
-            'BarrierFunction':'RBF',
+            'RBF':'RBF',
             'SlidingMode':'SMA',
             'SublevelSafeSet':'SSS' }
 passive = True
@@ -44,9 +44,9 @@ for model in models:
         if not (sum(collision) == 0):
             first_safe = [i for i, e in enumerate(collision) if abs(e) > 1e-9][-1]+1
 
-        nc_idx = np.where(collision < 5e-3)[0]
+        nc_idx = np.where(collision < 5e-2)[0]
         if len(nc_idx) == 0:
-            print(algo+' params range is too narrow. Safe params set can not be acquired.')
+            print(algo+' params range is too narrow. Safe params set can not bee acquired.')
         else:
             hi = nc_idx[np.argmax(efficiency[nc_idx])]
             # print('Hybrid param set,  safety,  efficiency')
@@ -61,6 +61,8 @@ for model in models:
         p = np.vstack([safety, efficiency]).T
         
         hull = ConvexHull(p)
+
+        print(*zip(safety, efficiency, collision, param_set))
 
         def calc_k(p):
             if (p[1,0] - p[0,0]) == 0:
@@ -92,7 +94,7 @@ for model in models:
 #============ convex bound ============
             for i in range(len(hv)-1):
                 k = p[hv[i+1], 0] - p[hv[i], 0]
-                if  k < 0 and p[hv[i], 1] < p[hv[i+1], 1]:
+                if  k < 0 :
                     plt.plot(p[hv[i:i+2], 0], p[hv[i:i+2], 1], c='C'+str(c), linewidth=3)
                     idx.append(hv[i])
                     idx.append(hv[i+1])
