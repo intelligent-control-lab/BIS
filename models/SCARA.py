@@ -14,6 +14,8 @@ class SCARA(KinematicModel):
 
     k_v = 1
 
+    max_ev = 2
+
     def __init__(self, agent, dT, auto = True, init_state = [-4,-4, 0, 0, 4.5, 4.5]):
         KinematicModel.__init__(self, init_state, agent, dT, auto, is_2D = True);
     def init_x(self, init_state):
@@ -158,6 +160,16 @@ class SCARA(KinematicModel):
         u = np.maximum(u, -self.max_u);
         return u;
 
+
+    def get_ev(self, x):
+        l1 = self.l[0]
+        l2 = self.l[1]
+        theta1 = x[0]
+        theta2 = x[1]
+        vx = (-l1 * sin(theta1) - l2 * sin(theta1 + theta2)) * x[2]  - l2 * sin(theta1 + theta2) * x[3];
+        vy = l1 * cos(theta1) * x[2] + l2 * cos(theta1 + theta2) * x[3];
+        return norm(np.vstack([vx, vy]));
+
     def filt_x(self, x):
         # x[0,0] = x[0,0] % (2*pi)
         # if x[0,0] < 0:
@@ -168,6 +180,12 @@ class SCARA(KinematicModel):
         #     x[1,0] = x[1,0] + 2*pi
         x = np.minimum(x,  self.max_x);
         x = np.maximum(x,  self.min_x);
+
+        ev = norm(self.get_ev(x))
+        while ev > self.max_ev:
+            x[[2,3]] = x[[2,3]] * 0.9
+            ev = norm(self.get_ev(x))
+
         return x
 
     def inv_J(self):

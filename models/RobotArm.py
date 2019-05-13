@@ -14,7 +14,7 @@ class RobotArm(KinematicModel):
 
     k_v = 1
 
-    max_ev = 3
+    max_ev = 2
 
     def __init__(self, agent, dT, auto = True, init_state = [-4,-4, 0, 0, np.pi/2, -np.pi/2, -np.pi/2, 4.5, 4.5, 2]):
         self.tao_1 = np.matrix([[1, 1, 1], [0, 1, 1], [0, 0, 1]])
