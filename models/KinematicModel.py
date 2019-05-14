@@ -9,7 +9,7 @@ from direct.gui.DirectGui import *
 from utils.ArgsPack import ArgsPack
 
 class KinematicModel:
-    """This is the base class for all robot dynamic models. We assume all the models are in the form:
+    """This is the base class for all robot dynamic models. We assume the models are all in the form:
                 X' = A * X +  B * u
             dot_X  =    fx + fu * u
         Because
@@ -18,6 +18,8 @@ class KinematicModel:
             fx = (A - I) / dT
             fu = B / dT
         We just need to specify A and B to get different dynamic models.
+
+        There are two major phases in the control circle, update and move. In the update phase, the robot will update its information based on the environment. And in the move phase, the robot will execute control input.
     """
 
     control_noise = 0.02 # noise scale
@@ -207,6 +209,11 @@ class KinematicModel:
         
 
     def update(self, obstacle):
+        """Update phase. 1. update score, 2. update goal, 3. update self state estimation, 4. update the nearest point on self to obstacle, 5. calculate control input, 6. update historical trajectory.
+
+        Args:
+            obstacle (KinematicModel()): the obstacle
+        """
         self.time = self.time + 1
         self.update_score(obstacle)
         self.update_goal()
@@ -219,9 +226,15 @@ class KinematicModel:
         self.trace = np.concatenate([self.trace[:,1:], self.get_P()],axis=1)
         
     def update_m(self, Mh):
+        """Update the nearest cartesian point on self to obstacle. 
+        Args:
+            Mh (ndarray): 6*1 array, cartesian postion and velocity of the obstacle.
+        """
         self.m = self.get_closest_X(Mh)
 
     def kalman_estimate_state(self):
+        """Use kalman filter to update the self state estimation.
+        """
         dT = self.dT
         A = self.A()
         B = self.B()
@@ -244,7 +257,10 @@ class KinematicModel:
         return x_est
 
     def calc_control(self, obstacle):
-        
+        """Generate control input by the agent.
+        Args:
+            obstacle (KinematicModel()): the obstacle
+        """
         dT = self.dT
         goal = self.goal
         fx = self.fx()
@@ -260,14 +276,18 @@ class KinematicModel:
         u0 = self.u_ref()
         min_u = self.min_u
         max_u = self.max_u
-        self.u = self.agent.calc_control_input(dT, goal, fx, fu, Xr, Xh, dot_Xr, dot_Xh, Mr, Mh, p_Mr_p_Xr, p_Mh_p_Xh, u0, min_u, max_u);
+        self.u = self.agent.calc_control_input(dT, goal, fx, fu, Xr, Xh, dot_Xr, dot_Xh, Mr, Mh, p_Mr_p_Xr, p_Mh_p_Xh, u0, min_u, max_u)
         self.u = self.filt_u(self.u)
 
     def dot_X(self):
+        """First order estimation of dot_X using current state and last state.
+        """
         return (self.x - self.x_his[:,-2]) / self.dT
         # return (self.x_pred - self.x_est) / self.dT
         
     def move(self):
+        """Move phase. An random disturbance is added to the control input.
+        """
         self.x = self.A() * self.x + self.B() * (self.u + randn(np.shape(self.u)[0],1) * self.control_noise)
         self.x = self.filt_x(self.x)
         self.x_his = np.concatenate([self.x_his[:,1:], self.x],axis=1)
@@ -285,16 +305,20 @@ class KinematicModel:
         pass
     def set_V(self, v):
         pass
-    # We assume all the models are in the form
-    #     X =  A * X +  B * u
-    # dot_X =     fx + fu * u
+    
     def A(self):
         pass
     def B(self):
         pass
     def get_closest_X(self, Mh):
+        """Update the corresponding state of the nearest cartesian point on self to obstacle. 
+        Args:
+            Mh (ndarray): 6*1 array, cartesian postion and velocity of the obstacle.
+        """
         pass
     def p_M_p_X(self): # p closest point p X
+        """ dM / dX, the derivative of the nearest cartesian point to robot state.
+        """
         pass
     def estimate_state(self):
         pass
@@ -356,10 +380,25 @@ class KinematicModel:
         vdata.setVertex(1, p_to)  
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
+        """
+        Load the 3d model to be shown in the GUI
+
+        Args:
+            render : panda3d component
+            loader : panda3d component
+            color (list): RGB and alpha
+            scale (float): scale to zoom the loaded 3d model.
+        """
         self.color = color
         self.render = render
 
     def redraw_model(self):
+        """
+        Refresh the position of the robot model and goal model in the GUI.
+        """
         pass
     def model_auxiliary(self):
+        """
+        This function is for debug use.
+        """
         pass
