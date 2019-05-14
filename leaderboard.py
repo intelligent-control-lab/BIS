@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 def leaderboard():
     """
-    This function generates roc curves for given models based on given parameter ranges
+    This function call evaluate() function to test algorithms on given parameter ranges. Parameter ranges are related to models. The parameters will be grid searched for each algorithms, and generate the roc curve by a convex hull to cover all results on the safety-efficiency plot.
+    
     """
     # models = ['Ball3D']
     # settings = [ \
@@ -16,7 +17,7 @@ def leaderboard():
     #     ('PFM',          {'d_min': [1, 2, 3], 'k_v': [0.5, 1, 2], 'c1': [1, 3, 5]}),\
     #     ('ZBF_2',              {'d_min': [1, 2, 3],  't':[0.5, 1, 2], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, True)
+    # roc_curve(models, settings, True)
 
     # models = ['Unicycle']
     # settings = [ \
@@ -32,7 +33,7 @@ def leaderboard():
     #     ('PFM',          {'d_min': [1, 2, 3], 'k_v': [0.5, 1, 2], 'c1': [1, 3, 5]}),\
     #     ('ZBF_2',              {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, True)
+    # roc_curve(models, settings, True)
 
     models = ['SCARA']
     settings = [ \
@@ -44,10 +45,10 @@ def leaderboard():
         ('ZBF',              {'d_min': [2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 2, 5, 10]}),\
         # ('ZBF_as',           {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
         # ('RBF',              {'d_min': [1, 2, 3],  't':[0.5, 1, 2], 'gamma':[0.1, 1, 2, 5]}),\
-        # ('PFM',          {'d_min': [1, 2, 3], 'k_v': [0.5, 1, 2], 'c1': [1, 3, 5]}),\
-        # ('ZBF_2',              {'d_min': [1, 2, 3],  't':[0.5, 1, 2], 'gamma':[0.1, 1, 5]}),\
+        ('PFM',              {'d_min': [1, 2, 3], 'k_v': [0.5, 1, 2], 'c1': [1, 3, 5]}),\
+        ('ZBF_2',            {'d_min': [1, 2, 3],  't':[0.5, 1, 2], 'gamma':[0.1, 1, 5]}),\
     ]
-    ret = roc_curve(models, settings, True)
+    roc_curve(models, settings, True)
 
     # models = ['RobotArm']
     # settings = [ \
@@ -63,7 +64,7 @@ def leaderboard():
     #     ('PFM',          {'d_min': [1, 2, 3], 'k_v': [0.5, 1, 2], 'c1': [1, 3, 5]}),\
     #     ('ZBF_2',              {'d_min': [1, 2, 3],  't':[0.5, 1, 2], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, True)
+    # roc_curve(models, settings, True)
 
     # fig, axs =plt.subplots(len(models)+1,1)
     # for i,model in enumerate(models):
@@ -88,7 +89,7 @@ def leaderboard():
     #     ('ZBF',              {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     #     ('ZBF_as',           {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, False)
+    # roc_curve(models, settings, False)
 
     # models = ['Unicycle']
     # settings = [ \
@@ -100,7 +101,7 @@ def leaderboard():
     #     ('ZBF',              {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     #     ('ZBF_as',           {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, False)
+    # roc_curve(models, settings, False)
 
     # models = ['SCARA']
     # settings = [ \
@@ -112,7 +113,7 @@ def leaderboard():
     #     ('ZBF',              {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     #     ('ZBF_as',           {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, False)
+    # roc_curve(models, settings, False)
 
     # models = ['RobotArm']
     # settings = [ \
@@ -125,7 +126,7 @@ def leaderboard():
     #     ('ZBF',              {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     #     ('ZBF_as',           {'d_min': [1, 2, 3, 4],  't':[0.5, 1, 2, 5], 'gamma':[0.1, 1, 5]}),\
     # ]
-    # ret = roc_curve(models, settings, False)
+    # roc_curve(models, settings, False)
 
 if __name__ == "__main__":
     leaderboard()

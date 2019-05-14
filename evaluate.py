@@ -6,19 +6,18 @@ from agents import *
 # from utils.World import World
 
 def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None, passive = True):
-    """This function evaluate an algorithm's performance on a given model.
+    """This function evaluate an algorithm's performance on a given model. To avoid repeated test, the algorithm will examine whether the results already exist. If they do, it will return the results directly. Which also means if you updated some algorithm, you need to delete previous results manually to see the changes.
 
     Args:
-        param1 (int): The first parameter.
-        param2 (str): The second parameter.
-        model (str): a string for the model name
-        algorithm (str): a string for the algorithm name
-        graphics (bool): whether to use graphics to show the results
-        robot (KinematicModel): you can pass in a initialized agent with a given setting. Or the function will give a default one. This is useful when you grid search the parameters.
-        save_postfix (str): a string 
+        model (str): the name of the model to be tested
+        algorithm (str): the name of the algorithm to be tested
+        graphics (bool): whether to use graphics to show the evaluation process on live
+        robot (KinematicModel): you can pass in an initialized agent with a given setting, or the function will use a default one. This is useful when you grid search the parameters.
+        save_postfix (str): a string to specify the name of the results
+        passive(bool): whether the human model is interactive to the robot's behavior. If is ture, human model will not react to the robot.
 
     Returns:
-        total_score (dict): A dict contains the algorithm's average score on different aspects.
+        total_score (dict): A dict contains the algorithm's average score on different aspects, include safety, efficiency, collision count, and nearest distance.
 
     """
 
@@ -31,7 +30,7 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
     if not passive:
         save_dir = os.path.join('interactive_eval_results', model, algorithm, save_postfix)
     
-    # Avoid repetition, which also means if you updated some algorithm, you need to delete former results manually to see the changes.
+    # Avoid repetition, which also means if you updated some algorithm, you need to delete previous results manually to see the changes.
 
     if robot is None:
         robot = eval(model + '(' + algorithm + '(), dT)')

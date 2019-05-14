@@ -9,14 +9,19 @@ from cycler import cycler
 import shutil, os
 import pickle
 def roc_curve(models, settings, passive = True):
+    """This function generates roc curves for algorithms on given models. First, this function will plot the scatters of safety-efficiency graph, then using a convex hull algorithm to generate the roc curves. The results are saved under "results/".
 
-    ret = dict()
+    Args:
+        models (str): the names of the model to be tested
+        seetings (dict): keys are the names of the algorithm to be tested, and values are parameter ranges for this algorithm.
+        passive(bool): whether the human model is interactive to the robot's behavior. If is ture, human model will not react to the robot.
+
+    """
     
     c = 0
     
     for model in models:
 
-        ret[model] = dict()
         fig = plt.figure() 
         his = []
         hie = []
@@ -112,7 +117,6 @@ def roc_curve(models, settings, passive = True):
             
 
             c += 1
-            ret[model][args[0]] = auc
             x = np.linspace(-20, -0.01, 100)
 
             # plt.plot(x, np.poly1d(np.polyfit(np.log(-safety + 1e-9), efficiency, 1))(np.log(-x)))
@@ -128,10 +132,9 @@ def roc_curve(models, settings, passive = True):
         save_name = model+'.pdf'
         if not passive:
             save_name = 'interactive_' + save_name
+        save_name = 'results/' + save_name
         fig.savefig(save_name, bbox_inches='tight')
         # plt.show()
-
-    return ret
 
 if __name__ == "__main__":
     models = ['Ball3D']

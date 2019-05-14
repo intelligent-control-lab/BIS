@@ -9,6 +9,16 @@ from direct.gui.DirectGui import *
 from utils.ArgsPack import ArgsPack
 
 class KinematicModel:
+    """This is the base class for all robot dynamic models. We assume all the models are in the form:
+                X' = A * X +  B * u
+            dot_X  =    fx + fu * u
+        Because
+            X' = X + dot_X * dT
+        Then
+            fx = (A - I) / dT
+            fu = B / dT
+        We just need to specify A and B to get different dynamic models.
+    """
 
     control_noise = 0.02 # noise scale
 
@@ -25,6 +35,16 @@ class KinematicModel:
     RLS_cache = dict()
 
     def __init__(self, init_state, agent, dT, auto, is_2D=False):
+        """This function initilize the robot.
+        
+        Args:
+            init_state (list): the init state of the robot, for example [x, y, vx, vy]
+            agent (MobileAgent()): the algorithm that controls this robot.
+            dT (float): the seperation between two control output
+            auto (bool): whether this robot is autonomous, if not, it is control by user input like mouse.
+            is_2D (bool): whether this model is a 2D model, which means it can only move on the groud plane.
+
+        """
         self.init_state = np.array(init_state)
         self.set_saturation()
 
@@ -45,6 +65,13 @@ class KinematicModel:
         self.get_closest_X(np.vstack([10,10,10,0,0,0]))
 
     def reset(self, dT, goals):
+        """This function reset the robot state to initial, and set the goals to given goals. This function is useful when the user need to make sure all the robot are tested under the same goal sequence,
+        
+        Args:
+            dT (float): the seperation between two control output
+            goals (ndarray): n*6 array of goal specification. [x y z 0 0 0]
+        """
+
         self.dT = dT
         self.set_goals(goals)
 
@@ -94,6 +121,11 @@ class KinematicModel:
         return x + randn(*np.shape(x)) * self.measure_noise
 
     def get_PV(self):
+        """This function return the cartesian position and velocity of the robot,
+        
+        Returns:
+            PV (ndarray): 6*1 array. [x y z vx vy vz]
+        """
         return np.vstack([self.get_P(), self.get_V()])
 
     def set_X(self, x):
@@ -101,25 +133,57 @@ class KinematicModel:
         self.set_V(x[[3,4,5]])
 
 
-    # We assume all the models are in the form
-    #     X =  A * X +  B * u
-    # dot_X =     fx + fu * u
+    
     def fx(self):
+        """This function calculate fx from A,
+        
+        Because
+            X' = X + dot_X * dT
+        Then
+            fx = (A - I) / dT
+        """
         return (self.A() - np.eye(np.shape(self.x)[0])) / self.dT * self.x
     def fu(self):
+        """This function calculate fu from B,
+        Because
+            X' = X + dot_X * dT
+        Then
+            fu = B / dT
+        """
         return self.B() / self.dT
 
     def filt_u(self, u):
+        """return the saturated control input based the given reference control input
+
+        Args:
+            u (ndarray): reference control input
+
+        Returns:
+            u (ndarray): saturated control input
+        """
         u = np.minimum(u,  self.max_u)
         u = np.maximum(u,  self.min_u)
         return u
         
     def filt_x(self, x):
+        """return the saturated robot state based the given reference state
+
+        Args:
+            x (ndarray): reference state
+
+        Returns:
+            x (ndarray): saturated state
+        """
         x = np.minimum(x,  self.max_x)
         x = np.maximum(x,  self.min_x)
         return x
 
     def update_score(self, obstacle):
+        """Update the scores of the robot based on the relative postion and relative velocity to the obstacle. The scores are used to draw roc curves and generate statistical restuls.
+
+        Args:
+            obstacle (KinematicModel()): the obstacle
+        """
         dm = obstacle.m - self.m
         dp = (obstacle.m - self.m)[[0,1,2],0]
         dv = (obstacle.m - self.m)[[3,4,5],0]
