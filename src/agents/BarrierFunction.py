@@ -8,12 +8,12 @@ from numpy.linalg import norm, inv
 
 class BarrierFunction(MobileAgent):
 
-    t = 0.5
-    gamma = 2
-    half_plane_ABC = []
-    d_min = 2
-
     def __init__(self):
+
+        self.t = 0.5
+        self.gamma = 2
+        self.half_plane_ABC = []
+        self.d_min = 2
         
         MobileAgent.__init__(self);
         self.safe_set = [0,0,0]
@@ -57,33 +57,13 @@ class BarrierFunction(MobileAgent):
         
         p_dot_d_p_Mr = p_dp_p_Mr.T * p_dot_d_p_dp + p_dv_p_Mr.T * p_dot_d_p_dv
 
-        # p_dot_d_p_Mr = [dM[2] / d - dM[0] / d**3 * dp.T * dv,
-        #                dM[3] / d - dM[1] / d**3 * dp.T * dv,
-        #                dM[0] / d,
-        #                dM[1] / d];
-
-        
-        # print('-=-=-=-=-=')
-
     
         h = (d ** 2 + dot_d * self.t - self.d_min)
         h = 1e-100 if h < 0 else h
         p_h_p_Mr = (2 * d * p_d_p_Mr + p_dot_d_p_Mr * self.t)
         p_h_p_Mh = -p_h_p_Mr
         
-        # if dot_d > 0:
-        #     h = (d - self.d_min)
-        #     h = 1e-10 if h < 0 else h
-        #     p_h_p_Mr = p_d_p_Mr
-        #     p_h_p_Mh = -p_d_p_Mr
-
-        # print('h')
-        # print(h)
-        # print('d')
-        # print(d)
-        # print('dot_d')
-        # print(dot_d)
-
+  
         B = -1*log(h / (1+h))
         p_B_p_h = (-1 / (h+1) / h)
 
@@ -93,17 +73,9 @@ class BarrierFunction(MobileAgent):
         LgB = p_B_p_Xr.T * fu
         A = matrix(LgB)
         b = matrix(self.gamma / B - LfB - p_B_p_Xh.T * dot_Xh)
-        # print('p_B_p_Xh.T * dot_Xh')
-        # print(p_B_p_Xh.T * dot_Xh)
-
 
         A = A / abs(b)
         b = b / abs(b)
-
-        # print('A')
-        # print(A)
-        # print('b')
-        # print(b)
 
         Q = matrix(eye(np.shape(u0)[0]))
         p = matrix(- 2 * u0)
@@ -123,78 +95,10 @@ class BarrierFunction(MobileAgent):
             sol=solvers.qp(Q, p, A, b)
             u = np.vstack(sol['x'])
         except:
-            # print('no solution')
             pass
-            # self.fuck = True
-        #     for i in range(10):
-        #         print('fufufufufufufu')
-        # print('Mr')
-        # print(Mr)
-        # print('h')
-        # print(h)
-        # print('d')
-        # print(d)
-        # print('dot_d')
-        # print(dot_d)
-        # print('p_d_p_Mr')
-        # print(p_d_p_Mr)
-        # # print('p_dot_d_p_Mr')
-        # # print(p_dot_d_p_Mr)
-        # print('B')
-        # print(B)
-        # print('LfB')
-        # print(LfB)
-        # print('LgB')
-        # print(LgB)
-
-        # print('fx')
-        # print(fx)
-        
-        # print('fu')
-        # print(fu)
-
-        # print('p_B_p_Xr')
-        # print(p_B_p_Xr)
-        # print('p_B_p_Xh')
-        # print(p_B_p_Xh)
-        # print('dot_Xh')
-        # print(dot_Xh)
-        # print('p_B_p_h')
-        # print(p_B_p_h)
-        # # print('p_Mr_p_Xr')
-        # # print(p_Mr_p_Xr)
-        # print('p_h_p_Mr')
-        # print(p_h_p_Mr)
-        
-        
-        
+            
         
         self.half_plane_ABC = matrix([[A],[-b - A[:,0]*Mr[0,0] - A[:,1]*Mr[1,0]]])
         self.ABC = matrix([[A],[-b]])
-        # minimize uQu + pu
-
-        # print('A')
-        # print(A)
-        # print('b')
-        # print(b)
         
-        # print('dot_B u0')
-        # print(LfB + LgB * u0)
-        # print('dot_B u')
-        # print(LfB + LgB * u)
-        # print('gamma / B')
-        # print(self.gamma / B)
-        # L = LgB;
-        # S = self.gamma/B - LfB - p_B_p_Xh.T * dot_Xh;
-        # if asscalar(L * u0) < asscalar(S):
-        #     u = u0;
-        # else:
-        #     u = u0 - (asscalar(L * u0 - S) * L.T / asscalar(L * L.T));
-
-
-        # print('u0')
-        # print(u0)
-        # print('u')
-        # print(u)
-
         return u
