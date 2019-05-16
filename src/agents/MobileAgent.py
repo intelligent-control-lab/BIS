@@ -1,7 +1,6 @@
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.random import rand, randn
 from numpy.linalg import norm, inv
 from numpy import cos, sin, arccos, sqrt
 from models import *

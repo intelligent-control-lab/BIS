@@ -3,7 +3,6 @@ import numpy as np
 from cvxopt import solvers, matrix
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar, log
-from numpy.random import rand, randn
 from numpy.linalg import norm, inv
 
 class BarrierFunction(MobileAgent):

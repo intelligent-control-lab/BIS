@@ -2,7 +2,6 @@ from .MobileAgent import MobileAgent
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix, sqrt, asscalar
-from numpy.random import rand, randn
 from numpy.linalg import norm, inv
 
 class SmoothSafeSet(MobileAgent):

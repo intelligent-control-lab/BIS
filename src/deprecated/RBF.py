@@ -3,15 +3,14 @@ import numpy as np
 from cvxopt import solvers, matrix
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar, log
-from numpy.random import rand, randn
 from numpy.linalg import norm, inv
 
-class ZBF_as(MobileAgent):
+class RBF(MobileAgent):
 
     t = 0.5
-    gamma = 1
+    gamma = 2
     half_plane_ABC = []
-    d_min = 3
+    d_min = 2
 
     def __init__(self):
         
@@ -62,23 +61,41 @@ class ZBF_as(MobileAgent):
         #                dM[0] / d,
         #                dM[1] / d];
 
-
-        h = self.d_min - d - dot_d * self.t
         
-        p_h_p_Mr = (-p_d_p_Mr - p_dot_d_p_Mr * self.t)
+        # print('-=-=-=-=-=')
+
+    
+        h = (d ** 2 + dot_d * self.t - self.d_min)
+        h = 1e-100 if h < 0 else h
+        p_h_p_Mr = (2 * d * p_d_p_Mr + p_dot_d_p_Mr * self.t)
         p_h_p_Mh = -p_h_p_Mr
         
-        B = h
-        p_B_p_h = 1
+        # if dot_d > 0:
+        #     h = (d - self.d_min)
+        #     h = 1e-10 if h < 0 else h
+        #     p_h_p_Mr = p_d_p_Mr
+        #     p_h_p_Mh = -p_d_p_Mr
+
+        # print('h')
+        # print(h)
+        # print('d')
+        # print(d)
+        # print('dot_d')
+        # print(dot_d)
+
+        B = -1*log(h / (1+h))
+        p_B_p_h = (-1 / (h+1) / h)
 
         p_B_p_Xr = p_B_p_h * p_Mr_p_Xr.T * p_h_p_Mr
         p_B_p_Xh = p_B_p_h * p_Mh_p_Xh.T * p_h_p_Mh
         LfB = p_B_p_Xr.T * fx
         LgB = p_B_p_Xr.T * fu
         A = matrix(LgB)
-        sg = 1 / (np.exp(-self.gamma * B) + 1)
-        b = matrix(-self.gamma * B - LfB - p_B_p_Xh.T * dot_Xh)
-        
+        b = matrix(self.gamma / B - LfB - p_B_p_Xh.T * dot_Xh)
+        # print('p_B_p_Xh.T * dot_Xh')
+        # print(p_B_p_Xh.T * dot_Xh)
+
+
         A = A / abs(b)
         b = b / abs(b)
 
@@ -91,23 +108,22 @@ class ZBF_as(MobileAgent):
         p = matrix(- 2 * u0)
 
         nu = np.shape(u0)[0]
-        G = matrix(np.vstack([eye(nu), -eye(nu)]))
-        r = matrix(np.vstack([max_u, -min_u]))
+        
+        
 
-        A = matrix([[A,G]])
-        b = matrix([[b,r]])
+        A = matrix([[A]])
+        b = matrix([[b]])
 
         u = u0
         self.fuck = False
-
-            
-        L = LgB;
-        S = -self.gamma*B - LfB - p_B_p_Xh.T * dot_Xh;
-        if asscalar(L * u0) < asscalar(S):
-            u = u0;
-        else:
-            u = u0 - (asscalar(L * u0 - S) * L.T / asscalar(L * L.T));
-        
+        try:
+            solvers.options['feastol']=1e-9
+            solvers.options['show_progress'] = False
+            sol=solvers.qp(Q, p, A, b)
+            u = np.vstack(sol['x'])
+        except:
+            # print('no solution')
+            pass
             # self.fuck = True
         #     for i in range(10):
         #         print('fufufufufufufu')
@@ -167,7 +183,12 @@ class ZBF_as(MobileAgent):
         # print(LfB + LgB * u)
         # print('gamma / B')
         # print(self.gamma / B)
-        
+        # L = LgB;
+        # S = self.gamma/B - LfB - p_B_p_Xh.T * dot_Xh;
+        # if asscalar(L * u0) < asscalar(S):
+        #     u = u0;
+        # else:
+        #     u = u0 - (asscalar(L * u0 - S) * L.T / asscalar(L * L.T));
 
 
         # print('u0')
