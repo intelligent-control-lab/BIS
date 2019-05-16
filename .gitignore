@@ -2,6 +2,8 @@
 eval_results/
 interactive_eval_results/
 .DS_Store
+.vscode/
+.gitignore
 
 __pycache__/
 *.py[cod]
