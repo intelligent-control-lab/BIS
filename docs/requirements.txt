@@ -1,0 +1,5 @@
+panda3d==1.10
+numpy
+cvxopt
+matplotlib
+matplotlib2tikz

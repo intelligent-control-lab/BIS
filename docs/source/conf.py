@@ -12,8 +12,18 @@
 #
 import os
 import sys
+import mock
+
+
+# MOCK_MODULES = ['numpy', 'numpy.matlib', 'scipy', 'panda3d', 'cvxopt', 'matplotlib', 'matplotlib.pyplot', 'direct.showbase.ShowBase' ,'panda3d.core' ,'direct.task.Task' ,'direct.gui.OnscreenText' ,'direct.showbase.DirectObject' ,'direct.gui.DirectGui']
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = mock.Mock()
+
+# autodoc_mock_imports = ['numpy', 'scipy', 'panda3d', 'cvxopt', 'matplotlib', 'matplotlib.pyplot']
+
 sys.path.insert(0, os.path.abspath('../../src'))
 
+master_doc = 'index'
 
 # -- Project information -----------------------------------------------------
 
@@ -30,7 +40,7 @@ release = '1.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

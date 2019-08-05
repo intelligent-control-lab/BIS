@@ -2,6 +2,6 @@ leaderboard module
 ==================
 
 .. automodule:: leaderboard
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
