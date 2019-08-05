@@ -121,7 +121,7 @@ interfaces specified for a particular programming language, one that
 is widely used among developers working in that language.
 
   The "System Libraries" of an executable work include anything, other
-than the work as a whole, that (a) is included in the normal form of
+than the work as a whole, that (a) is included in the np.linalg.normal form of
 packaging a Major Component, but which is not part of that Major
 Component, and (b) serves only to enable use of the work with that
 Major Component, or to implement a Standard Interface for which an
@@ -295,11 +295,11 @@ from the Corresponding Source as a System Library, need not be
 included in conveying the object code work.
 
   A "User Product" is either (1) a "consumer product", which means any
-tangible personal property which is normally used for personal, family,
+tangible personal property which is np.linalg.normally used for personal, family,
 or household purposes, or (2) anything designed or sold for incorporation
 into a dwelling.  In determining whether a product is a consumer product,
 doubtful cases shall be resolved in favor of coverage.  For a particular
-product received by a particular user, "normally used" refers to a
+product received by a particular user, "np.linalg.normally used" refers to a
 typical or common use of that class of product, regardless of the status
 of the particular user or of the way in which the particular user
 actually uses, or expects or is expected to use, the product.  A product
