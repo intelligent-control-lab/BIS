@@ -2,21 +2,20 @@ from .KinematicModel import KinematicModel
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix, diag, asscalar
-from numpy.random import rand, randn
-from numpy.linalg import norm, inv
+
+
 from numpy import inf, cos, sin, arccos, sqrt, pi, arctan2, cross, dot, multiply
 
 class RobotArm(KinematicModel):
-
-    max_v = pi/4
-
-    max_a = pi
-
-    k_v = 1
-
-    max_ev = 2
+    """
+    This is the 4 DoF robot arm model.
+    """
 
     def __init__(self, agent, dT, auto = True, init_state = [-4,-4, 0, 0, np.pi/2, -np.pi/2, -np.pi/2, 4.5, 4.5, 2]):
+        self.max_v = pi/4
+        self.max_a = pi
+        self.k_v = 1
+        self.max_ev = 2 
         self.tao_1 = np.matrix([[1, 1, 1], [0, 1, 1], [0, 0, 1]])
         self.tao_2 = np.matrix([[0, 1, 1], [0, 1, 1], [0, 0, 1]])
         self.tao_3 = np.matrix([[0, 0, 1], [0, 0, 1], [0, 0, 1]])
@@ -84,7 +83,7 @@ class RobotArm(KinematicModel):
         dot_x = -r * sin(alpha) * dot_alpha + cos(alpha) * dot_r
         dot_y =  r * cos(alpha) * dot_alpha + sin(alpha) * dot_r
 
-        return norm(np.vstack([dot_x, dot_y, dot_z]));
+        return np.linalg.norm(np.vstack([dot_x, dot_y, dot_z]));
 
         
     #return the postion of closest point to obstacle
@@ -138,17 +137,17 @@ class RobotArm(KinematicModel):
             return dot(x - p1, p2 - p1) > 0 and dot(x - p2, p1 - p2) > 0
 
         def point_2_seg(x, p1, p2):
-            d1 = norm(x - p1)
-            d2 = norm(x - p2)
-            l = norm(p1 - p2)
+            d1 = np.linalg.norm(x - p1)
+            d2 = np.linalg.norm(x - p2)
+            l = np.linalg.norm(p1 - p2)
             if not is_between(x, p1, p2):
                 if d1 < d2:
                     return [d1, 0]
                 else:
                     return [d2, l]
             else:
-                dis = norm(cross(p1-x, p2-x)) / l;
-                lm = dot(x - p1, p2 - p1) / norm(p2 - p1)
+                dis = np.linalg.norm(cross(p1-x, p2-x)) / l;
+                lm = dot(x - p1, p2 - p1) / np.linalg.norm(p2 - p1)
                 return [dis, lm]
 
         [dis1, lm1] = point_2_seg(Ph, self.base, j1)
@@ -317,10 +316,10 @@ class RobotArm(KinematicModel):
         x = np.minimum(x,  self.max_x);
         x = np.maximum(x,  self.min_x);
 
-        ev = norm(self.get_ev(x))
+        ev = np.linalg.norm(self.get_ev(x))
         while ev > self.max_ev:
             x[[4,5,6,7]] = x[[4,5,6,7]] * 0.9
-            ev = norm(self.get_ev(x))
+            ev = np.linalg.norm(self.get_ev(x))
 
         return x
 
@@ -332,7 +331,7 @@ class RobotArm(KinematicModel):
         rp = self.l.T * cos_v
         px = rp * cos(x[0]) + self.base[0]
         py = rp * sin(x[0]) + self.base[1]
-        d = norm(np.vstack([px,py,pz]) - g[[0,1,2]])
+        d = np.linalg.norm(np.vstack([px,py,pz]) - g[[0,1,2]])
         return d
     
     def gradient_f(self, x, g):
@@ -346,7 +345,7 @@ class RobotArm(KinematicModel):
         return df
     def inv_J(self):
         J = self.p_P_p_X()
-        # inv_J = inv(J.T * J) * J.T
+        # inv_J = np.linalg.inv(J.T * J) * J.T
         # dot_p  = J * dot_x
         # J = p_dot_p_p_dot_x  -> p_P_p_X()[[3,4,5], [4,5,6,7]]
         # J * dot_x + dot_J * x = u = dot_dot_p
@@ -359,7 +358,7 @@ class RobotArm(KinematicModel):
     def u_ref(self):
         inv_J = self.inv_J()
         dp = self.observe(self.goal[[0,1,2]] - self.get_P())
-        dis = norm(dp)
+        dis = np.linalg.norm(dp)
         v = self.observe(self.get_V())
         df = self.gradient_f(self.observe(self.x[[0,1,2,3],0]), self.goal)
         

@@ -2,14 +2,17 @@ from .Ball3D import Ball3D
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.random import rand, randn
-from numpy.linalg import norm, inv
 from numpy import cos, sin, arccos, sqrt, pi, arctan2
 
 class HumanBall3D(Ball3D):
 
-    max_a = 4
+    """
+    This the passive human 3D ball model. We assume a ball is control by human.
+    The human has no response to the robot.
+    """
+
     def __init__(self, agent, dT, auto = True, init_state=[5,5,0,0,0,0]):
+        self.max_a = 4
         Ball3D.__init__(self, agent, dT, auto, init_state)
         self.RLS_cache['pred_delay'] = 3
         self.RLS_cache['A'] = self.A()
@@ -56,13 +59,13 @@ class HumanBall3D(Ball3D):
 
         p = self.goal[[0,1,2]] - self.get_P()
         v = self.goal[[3,4,5]] - self.get_V()
-        dis = norm(p)
+        dis = np.linalg.norm(p)
         if dis > 2:
             self.u = p / max(abs(p)) * self.max_a
         elif 1 < dis and dis <= 2:
-            self.u = (p / max(abs(p)) * 0.7 + v / max(abs(v)) * 0.3 ) * self.max_a + randn() * 0.05
+            self.u = (p / max(abs(p)) * 0.7 + v / max(abs(v)) * 0.3 ) * self.max_a + np.random.randn() * 0.05
         else:
-            self.u = (p / max(abs(p)) * 0.6 + v / max(abs(v)) * 0.4 ) * self.max_a + randn() * 0.05
+            self.u = (p / max(abs(p)) * 0.6 + v / max(abs(v)) * 0.4 ) * self.max_a + np.random.randn() * 0.05
         
 
     def move(self, *args):
@@ -77,7 +80,7 @@ class HumanBall3D(Ball3D):
             v = self.get_V()
             
             d = np.vstack(args)[[0,1]] - p
-            dis = norm(d)
+            dis = np.linalg.norm(d)
             if dis < 2:
                 self.u = (d / 2 - v / self.max_v / 4) * self.max_a
             else:

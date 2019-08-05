@@ -2,7 +2,7 @@ from .MobileAgent import MobileAgent
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar
-from numpy.linalg import norm, inv
+
 from cvxopt import solvers, matrix
 
 class Naive(MobileAgent):
@@ -21,7 +21,7 @@ class Naive(MobileAgent):
         p_idx = np.arange(dim)
         v_idx = p_idx + dim
 
-        d = norm(Mr[p_idx] - Mh[p_idx])
+        d = np.linalg.norm(Mr[p_idx] - Mh[p_idx])
         
         # sgn = -1 if np.asscalar((Mr[[0,1],0] - Mh[[0,1],0]).T * (Mr[[2,3],0] - Mh[[2,3],0])) < 0 else 1
         # dot_d = sgn * sqrt((Mr[2,0] - Mh[2,0])**2 + (Mr[3,0] - Mh[3,0])**2)

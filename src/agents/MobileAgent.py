@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.linalg import norm, inv
+
 from numpy import cos, sin, arccos, sqrt
 from models import *
 
@@ -9,7 +9,6 @@ class MobileAgent:
 
     """This is the base class for algorithms. We assume all the algorithms use relative cartesian position and velocity to evaluate current safety index.
     """
-    max_a = 4 # max acceleration per second
 
     def __init__(self):
         pass

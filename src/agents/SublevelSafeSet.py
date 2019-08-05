@@ -2,20 +2,22 @@ from .MobileAgent import MobileAgent
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar
-from numpy.linalg import norm, inv
+
 from cvxopt import solvers, matrix
 
 class SublevelSafeSet(MobileAgent):
 
-    k_v = 0.5 # factor for punish relative velocity
-    d_min = 1.5 # min distance to react
-    gamma = 1 # safety derivative slacking term
-    lambd = 0.5 # uncertainty margin
-    half_plane_ABC = []
+    """
+    This is the sublevel safeset. Please refer to the paper for details.
+    """
 
     def __init__(self, d_min=2, k_v=1, gamma=5):
         
         MobileAgent.__init__(self);
+
+        self.lambd = 0.5 # uncertainty margin
+        self.half_plane_ABC = []
+        
         self.safe_set = [0,0,0]
         self.k_v = k_v
         self.d_min = d_min
@@ -28,7 +30,7 @@ class SublevelSafeSet(MobileAgent):
         p_idx = np.arange(dim)
         v_idx = p_idx + dim
 
-        d = norm(Mr[p_idx] - Mh[p_idx])
+        d = np.linalg.norm(Mr[p_idx] - Mh[p_idx])
         
         # sgn = -1 if np.asscalar((Mr[[0,1],0] - Mh[[0,1],0]).T * (Mr[[2,3],0] - Mh[[2,3],0])) < 0 else 1
         # dot_d = sgn * sqrt((Mr[2,0] - Mh[2,0])**2 + (Mr[3,0] - Mh[3,0])**2)

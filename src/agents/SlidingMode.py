@@ -2,18 +2,22 @@ from .MobileAgent import MobileAgent
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix, sqrt, asscalar
-from numpy.linalg import norm, inv
+
 
 class SlidingMode(MobileAgent):
 
-    k_v = 2 # factor for punish relative velocity
-    d_min = 2
-    alpha = 3
-    u_p = 10
-
     def __init__(self):
+
+        """
+        This is the Sliding Mode mehtod. Please refer to the paper for details.
+        """
         
         MobileAgent.__init__(self)
+
+        self.k_v = 2 # factor for punish relative velocity
+        self.d_min = 2
+        self.alpha = 3
+        self.u_p = 10
         
         self.fSM = matrix(zeros((4,1)))
 
@@ -31,7 +35,7 @@ class SlidingMode(MobileAgent):
         p_idx = np.arange(dim)
         v_idx = p_idx + dim
 
-        d = norm(Mr[p_idx] - Mh[p_idx])
+        d = np.linalg.norm(Mr[p_idx] - Mh[p_idx])
         
         # sgn = -1 if np.asscalar((Mr[[0,1],0] - Mh[[0,1],0]).T * (Mr[[2,3],0] - Mh[[2,3],0])) < 0 else 1
         # dot_d = sgn * sqrt((Mr[2,0] - Mh[2,0])**2 + (Mr[3,0] - Mh[3,0])**2)

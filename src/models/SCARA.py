@@ -2,21 +2,20 @@ from .KinematicModel import KinematicModel
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.random import rand, randn
-from numpy.linalg import norm, inv
+
+
 from numpy import inf, cos, sin, arccos, sqrt, pi, arctan2, cross, dot
 
 class SCARA(KinematicModel):
-
-    max_v = pi/4
-
-    max_a = 2*pi
-
-    k_v = 1
-
-    max_ev = 2
+    """
+    This is the SCARA model, a 2 DoF plane robot.
+    """
 
     def __init__(self, agent, dT, auto = True, init_state = [-4,-4, 0, 0, 4.5, 4.5]):
+        self.max_v = pi/4
+        self.max_a = 2*pi
+        self.k_v = 1
+        self.max_ev = 2 
         KinematicModel.__init__(self, init_state, agent, dT, auto, is_2D = True);
     def init_x(self, init_state):
         # x = [theta1, theta2, dot_theta1, dot_theta2]
@@ -72,9 +71,9 @@ class SCARA(KinematicModel):
             return dot(x - p1, p2 - p1) > 0 and dot(x - p2, p1 - p2) > 0
 
         def point_2_seg(x, p1, p2):
-            d1 = norm(x - p1)
-            d2 = norm(x - p2)
-            l = norm(p1 - p2)
+            d1 = np.linalg.norm(x - p1)
+            d2 = np.linalg.norm(x - p2)
+            l = np.linalg.norm(p1 - p2)
             if not is_between(x, p1, p2):
                 if d1 < d2:
                     return [d1, 0]
@@ -83,7 +82,7 @@ class SCARA(KinematicModel):
             else:
             
                 dis = abs(cross(p1-x, p2-x)) / l;
-                lm = dot(x - p1, p2 - p1) / norm(p2 - p1)
+                lm = dot(x - p1, p2 - p1) / np.linalg.norm(p2 - p1)
                 return [dis, lm]
 
         [dis1, lm1] = point_2_seg(Ph, self.base, j1)
@@ -168,7 +167,7 @@ class SCARA(KinematicModel):
         theta2 = x[1]
         vx = (-l1 * sin(theta1) - l2 * sin(theta1 + theta2)) * x[2]  - l2 * sin(theta1 + theta2) * x[3];
         vy = l1 * cos(theta1) * x[2] + l2 * cos(theta1 + theta2) * x[3];
-        return norm(np.vstack([vx, vy]));
+        return np.linalg.norm(np.vstack([vx, vy]));
 
     def filt_x(self, x):
         # x[0,0] = x[0,0] % (2*pi)
@@ -181,10 +180,10 @@ class SCARA(KinematicModel):
         x = np.minimum(x,  self.max_x);
         x = np.maximum(x,  self.min_x);
 
-        ev = norm(self.get_ev(x))
+        ev = np.linalg.norm(self.get_ev(x))
         while ev > self.max_ev:
             x[[2,3]] = x[[2,3]] * 0.9
-            ev = norm(self.get_ev(x))
+            ev = np.linalg.norm(self.get_ev(x))
 
         return x
 
@@ -195,7 +194,7 @@ class SCARA(KinematicModel):
         return J.T
         # a = self.l[0]
         # b = self.l[1]
-        # c = norm(p[[0,1]])
+        # c = np.linalg.norm(p[[0,1]])
         # a_theta2 = arccos((a**2 + b**2 - c**2) / (2*a*b))
         # a_theta2 = a_theta2 - pi
         # d1 = arccos((a**2 + c**2 - b**2) / (2*a*c))
@@ -227,7 +226,7 @@ class SCARA(KinematicModel):
     def u_ref(self):
         inv_J = self.inv_J()
         dp = self.observe((self.goal - self.get_PV())[[0,1]]);
-        dis = norm(dp);
+        dis = np.linalg.norm(dp);
         v = self.observe(self.get_V())[[0,1]];
 
         if dis > 2:

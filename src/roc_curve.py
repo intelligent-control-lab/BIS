@@ -1,3 +1,5 @@
+import matplotlib
+# matplotlib.use("TKAgg")
 import matplotlib.pyplot as plt
 import numpy as np
 from agents import *
@@ -15,13 +17,12 @@ def roc_curve(models, settings, passive = True):
         models (str): the names of the model to be tested
         seetings (dict): keys are the names of the algorithm to be tested, and values are parameter ranges for this algorithm.
         passive(bool): whether the human model is interactive to the robot's behavior. If is ture, human model will not react to the robot.
-
     """
     
     c = 0
     
     for model in models:
-
+        
         fig = plt.figure() 
         his = []
         hie = []
@@ -32,7 +33,7 @@ def roc_curve(models, settings, passive = True):
             tuner = Tuner(model ,args[0], args[1], passive)
             result = tuner.tune()
             result.sort(key=lambda tup: tup[0])
-
+            
             print('result')
             print(*result, sep = "\n")
 

@@ -206,37 +206,37 @@
   }
   <Polygon> {
     <MRef> { Material }
-    <Normal> { 0.000000 0.000000 -1.000000
+    <normal> { 0.000000 0.000000 -1.000000
     }
     <VertexRef> { 0 1 2 3 <Ref> { Cube } }
   }
   <Polygon> {
     <MRef> { Material }
-    <Normal> { 0.000000 -0.000000 1.000000
+    <normal> { 0.000000 -0.000000 1.000000
     }
     <VertexRef> { 4 5 6 7 <Ref> { Cube } }
   }
   <Polygon> {
     <MRef> { Material }
-    <Normal> { 1.000000 -0.000000 0.000000
+    <normal> { 1.000000 -0.000000 0.000000
     }
     <VertexRef> { 8 9 10 11 <Ref> { Cube } }
   }
   <Polygon> {
     <MRef> { Material }
-    <Normal> { -0.000000 -1.000000 -0.000000
+    <normal> { -0.000000 -1.000000 -0.000000
     }
     <VertexRef> { 12 13 14 15 <Ref> { Cube } }
   }
   <Polygon> {
     <MRef> { Material }
-    <Normal> { -1.000000 0.000000 -0.000000
+    <normal> { -1.000000 0.000000 -0.000000
     }
     <VertexRef> { 16 17 18 19 <Ref> { Cube } }
   }
   <Polygon> {
     <MRef> { Material }
-    <Normal> { 0.000000 1.000000 0.000000
+    <normal> { 0.000000 1.000000 0.000000
     }
     <VertexRef> { 20 21 22 23 <Ref> { Cube } }
   }

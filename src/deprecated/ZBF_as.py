@@ -3,9 +3,9 @@ import numpy as np
 from cvxopt import solvers, matrix
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar, log
-from numpy.linalg import norm, inv
 
-class ZBF_as(MobileAgent):
+
+class ZeroingBarrierFunction_as(MobileAgent):
 
     t = 0.5
     gamma = 1
@@ -23,7 +23,7 @@ class ZBF_as(MobileAgent):
         p_idx = np.arange(dim)
         v_idx = p_idx + dim
 
-        d = norm(Mr[p_idx] - Mh[p_idx])
+        d = np.linalg.norm(Mr[p_idx] - Mh[p_idx])
 
         dot_Mr = p_Mr_p_Xr * dot_Xr
         dot_Mh = p_Mh_p_Xh * dot_Xh

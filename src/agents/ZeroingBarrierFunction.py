@@ -3,15 +3,12 @@ import numpy as np
 from cvxopt import solvers, matrix
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar, log
-from numpy.linalg import norm, inv
 
-class ZBF(MobileAgent):
 
-    t = 0.5
-    gamma = 1
-    half_plane_ABC = []
-    d_min = 3
-
+class ZeroingBarrierFunction(MobileAgent):
+    """
+    This is the Zeroing Barrier Function method. Please refer to the paper for details.
+    """
     def __init__(self, d_min=3, t=0.5, gamma=1):
         
         MobileAgent.__init__(self);
@@ -19,6 +16,7 @@ class ZBF(MobileAgent):
         self.d_min = d_min
         self.t = t
         self.gamma = gamma
+        self.half_plane_ABC = []
 
     def calc_control_input(self, dT, goal, fx, fu, Xr, Xh, dot_Xr, dot_Xh, Mr, Mh, p_Mr_p_Xr, p_Mh_p_Xh, u0, min_u, max_u):
         
@@ -26,7 +24,7 @@ class ZBF(MobileAgent):
         p_idx = np.arange(dim)
         v_idx = p_idx + dim
 
-        d = norm(Mr[p_idx] - Mh[p_idx])
+        d = np.linalg.norm(Mr[p_idx] - Mh[p_idx])
 
         dot_Mr = p_Mr_p_Xr * dot_Xr
         dot_Mh = p_Mh_p_Xh * dot_Xh

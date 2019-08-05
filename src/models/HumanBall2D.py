@@ -8,8 +8,13 @@ from numpy import cos, sin, arccos, sqrt, pi, arctan2
 
 class HumanBall2D(Ball):
 
-    max_a = 4
+    """
+    This the passive human 2D ball model. We assume a ball is control by human.
+    The human has no response to the robot.
+    """
+
     def __init__(self, agent, dT, auto = True, init_state=[5,5,0,0]):
+        self.max_a = 4
         Ball.__init__(self, agent, dT, auto, init_state)
         self.RLS_cache['pred_delay'] = 3
         self.RLS_cache['A'] = self.A()

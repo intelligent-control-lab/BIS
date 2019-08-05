@@ -14,7 +14,7 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
         graphics (bool): whether to use graphics to show the evaluation process on live
         robot (KinematicModel): you can pass in an initialized agent with a given setting, or the function will use a default one. This is useful when you grid search the parameters.
         save_postfix (str): a string to specify the name of the results
-        passive(bool): whether the human model is interactive to the robot's behavior. If is ture, human model will not react to the robot.
+        passive(bool): whether the human model is passive to the robot's behavior. If is ture, human model will not react to the robot.
 
     Returns:
         total_score (dict): A dict contains the algorithm's average score on different aspects, include safety, efficiency, collision count, and nearest distance.
@@ -106,7 +106,6 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
         #     except SystemExit as e:
         #         pass
 
-
         save_data(save_dir, name.replace('data', 'result'), record)
         for k in robot.score.keys():
             if k not in total_score:
@@ -131,6 +130,14 @@ def evaluate(model, algorithm, graphics = False, robot = None, save_postfix=None
     return total_score
 
 def save_data(folder, name, record):
+    """
+    This function saves the results.
+
+    Args:
+        folder: folder path
+        name: file name
+        record: evaluation result
+    """
     if not os.path.exists(folder):
         os.makedirs(folder)
     f = open(os.path.join(folder, name), 'wb')

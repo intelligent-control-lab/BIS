@@ -2,23 +2,23 @@ from .KinematicModel import KinematicModel
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.random import rand, randn
-from numpy.linalg import norm, inv
+
+
 from numpy import inf, cos, sin, arccos, sqrt, pi, arctan2
 from panda3d.core import *
 from direct.gui.DirectGui import *
 
 class Unicycle(KinematicModel):
-
-    max_vr = 2
-
-    max_ar = 4
-    max_vt = pi
-
-    k_v = 2
-    k_theta = 2
+    """
+    This is the unicycle model, the robot can only turn around and move forward and backward.
+    """
 
     def __init__(self, agent, dT, auto=True, init_state = [-5,-5,0,0]):
+        self.max_vr = 2
+        self.max_ar = 4
+        self.max_vt = pi
+        self.k_v = 2
+        self.k_theta = 2
         KinematicModel.__init__(self, init_state, agent, dT, auto, is_2D = True);
 
     def set_saturation(self):
@@ -46,7 +46,7 @@ class Unicycle(KinematicModel):
         self.x[1,0] = p[1]
 
     def set_V(self, v):
-        self.x[2,0] = norm(v)
+        self.x[2,0] = np.linalg.norm(v)
         self.x[3,0] = arctan2(v[1], v[0])
     
     def get_closest_X(self, Xh):
@@ -83,7 +83,7 @@ class Unicycle(KinematicModel):
     #     x = matrix(zeros((4,1)));
     #     x[0,0] = p[0,0];
     #     x[1,0] = p[1,0];
-    #     x[2,0] = norm(p[[2,3],0]);
+    #     x[2,0] = np.linalg.norm(p[[2,3],0]);
     #     x[3,0] = np.arctan2(p[3,0], p[2,0]);
     #     return x;
 
@@ -100,12 +100,12 @@ class Unicycle(KinematicModel):
     def u_ref(self):
         
         dp = self.observe((self.goal - self.get_PV())[[0,1]]);
-        dis = norm(dp);
+        dis = np.linalg.norm(dp);
         v = self.observe(self.get_V())[[0,1]];
         
         theta_R = self.observe(self.x[3,0])
 
-        if(norm(v) < 1e-5):
+        if(np.linalg.norm(v) < 1e-5):
             v[0] = 1e-5 * cos(theta_R)
             v[1] = 1e-5 * sin(theta_R)
         
@@ -129,7 +129,7 @@ class Unicycle(KinematicModel):
         if np.asscalar(dp.T * v) < 0:
             sgn = -1
         
-        u0[0,0] = dp[0] * cos(theta_R) + dp[1] * sin(theta_R) - self.k_v * norm(v) * sgn;
+        u0[0,0] = dp[0] * cos(theta_R) + dp[1] * sin(theta_R) - self.k_v * np.linalg.norm(v) * sgn;
         u0[1,0] = self.k_theta * d_theta
         
         return u0;

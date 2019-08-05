@@ -2,7 +2,6 @@ from .MobileAgent import MobileAgent
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, sqrt, asscalar
-from numpy.linalg import norm, inv
 from cvxopt import solvers, matrix
 
 class Human(MobileAgent):
@@ -25,7 +24,7 @@ class Human(MobileAgent):
         p_idx = np.arange(dim)
         v_idx = p_idx + dim
 
-        d = norm(Mr[p_idx] - Mh[p_idx])
+        d = np.linalg.norm(Mr[p_idx] - Mh[p_idx])
         
         # sgn = -1 if np.asscalar((Mr[[0,1],0] - Mh[[0,1],0]).T * (Mr[[2,3],0] - Mh[[2,3],0])) < 0 else 1
         # dot_d = sgn * sqrt((Mr[2,0] - Mh[2,0])**2 + (Mr[3,0] - Mh[3,0])**2)
@@ -113,79 +112,4 @@ class Human(MobileAgent):
 
         self.fuck = False
     
-        # print('Xr')
-        # print(Xr.T)
-        # print('Xh')
-        # print(Xh.T)
-        # print('dot Xr')
-        # print(dot_Xr.T)
-        # print('dot Xh')
-        # print(dot_Xh.T)
-
-        # print('p_phi_p_Xr')
-        # print(p_phi_p_Xr.T)
-
-        # print(- 2 * d * p_d_p_Xr)
-        # print(- self.k_v * p_dot_d_p_Xr)
-
-        # print('p_d_p_Xr')
-        # print(p_d_p_Xr)
-
-        # print('p_d_p_Mr')
-        # print(p_d_p_Mr)
-
-        # print('p_Mr_p_Xr')
-        # print(p_Mr_p_Xr)
-
-        # print('p_dot_d_p_Xr')
-        # print(p_dot_d_p_Xr)
-
-        # print('p_dot_d_p_Mr')
-        # print(p_dot_d_p_Mr)
-
-        # print('p_phi_p_Xh')
-        # print(p_phi_p_Xh.T)
-        # print(- 2 * d * p_d_p_Xh)
-        # print(- self.k_v * p_dot_d_p_Xh)
-
-        # print('p_d_p_Xh')
-        # print(p_d_p_Xh)
-
-        # print('p_dot_d_p_Xh')
-        # print(p_dot_d_p_Xh)
-        
-        # print('phi')
-        # print(phi)
-        # print('dot_phi')
-        # print(dot_phi)
-        # print(p_phi_p_Xr.T * dot_Xr)
-        # print(p_phi_p_Xh.T * dot_Xh)
-
-        # print('d')
-        # print(d)
-        # print('dot_d')
-        # print(dot_d);
-        
-        # print('L')
-        # print(L)
-        # print('fu')
-        # print(fu)
-
-        # print('S')
-        # print(S)
-        # print(- self.yita - self.lambd)
-        # print(- p_phi_p_Xh.T * dot_Xh)
-        # print(- p_phi_p_Xr.T * fx);
-        # print('L * u0')
-        # print(L * u0)
-        # print('L * u')
-        # print(L * u)
-        # print('<')
-        # print(asscalar(L * u0) < asscalar(S))
-        
-        # print('u0')
-        # print(u0)
-        # print('u')
-        # print(u)
-
         return u;

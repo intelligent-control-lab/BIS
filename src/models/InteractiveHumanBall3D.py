@@ -2,18 +2,21 @@ from .KinematicModel import KinematicModel
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.random import rand, randn
-from numpy.linalg import norm, inv
+
+
 from numpy import cos, sin, arccos, sqrt, pi, arctan2
 from panda3d.core import *
 from direct.gui.DirectGui import *
 
 class InteractiveHumanBall3D(KinematicModel):
-
-    max_v = 2
-    max_a = 4
+    """
+    This the interactive human 3D ball model. We assume a ball is control by human.
+    The human will try to avoid collision with the robot.
+    """
 
     def __init__(self, agent, dT, auto = True, init_state=[5,5,0,0,0,0]):
+        self.max_v = 2
+        self.max_a = 4
         KinematicModel.__init__(self, init_state, agent, dT, auto, is_2D = False)
 
     def init_x(self, init_state):
@@ -78,7 +81,7 @@ class InteractiveHumanBall3D(KinematicModel):
     def u_ref(self):
         K = matrix([[1,0,0,2,0,0],[0,1,0,0,2,0],[0,0,1,0,0,2]]);
         dp = self.observe(self.goal[[0,1,2]] - self.m[[0,1,2]]);
-        dis = norm(dp);
+        dis = np.linalg.norm(dp);
         v = self.observe(self.m[[3,4,5]]);
 
         if dis > 2:

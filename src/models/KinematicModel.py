@@ -1,40 +1,33 @@
 import numpy as np
 from numpy.matlib import repmat
 from numpy import zeros, eye, ones, matrix
-from numpy.random import rand, randn
-from numpy.linalg import norm, inv
 from numpy import cos, sin, arccos, sqrt, pi, arctan2
 from panda3d.core import *
 from direct.gui.DirectGui import *
 from utils.ArgsPack import ArgsPack
 
 class KinematicModel:
-    """This is the base class for all robot dynamic models. We assume the models are all in the form:
-                X' = A * X +  B * u
-            dot_X  =    fx + fu * u
-        Because
-            X' = X + dot_X * dT
-        Then
-            fx = (A - I) / dT
-            fu = B / dT
-        We just need to specify A and B to get different dynamic models.
+    """This is the base class for all robot dynamic models. 
+    We assume the models are all in the form:
 
-        There are two major phases in the control circle, update and move. In the update phase, the robot will update its information based on the environment. And in the move phase, the robot will execute control input.
-    """
+    :math:`X' = A * X +  B * u`
 
-    control_noise = 0.02 # noise scale
-
-    safe_dis = 1
+    :math:`\dot X  =  fx + fu * u`
     
-    map_size = 10 # map boundary size
-    fraction = 0.2 # velocity decrease rate per dT
+    Because
 
-    disk_radius = 0.4 # radius of disk
+    :math:`X' = X + \dot X * dT`
 
-    measure_noise = 0.02 # noise scale
-    # auto # whether is controled by human
-    # kalman_P
-    RLS_cache = dict()
+    Then
+
+    :math:`fx = (A - I) / dT`
+
+    :math:`fu = B / dT`
+
+    We just need to specify A and B to define different dynamic models.
+
+    There are two major phases in the control circle, update and move. In the update phase, the robot will update its information based on the environment. And in the move phase, the robot will execute control input.
+    """
 
     def __init__(self, init_state, agent, dT, auto, is_2D=False):
         """This function initilize the robot.
@@ -47,6 +40,15 @@ class KinematicModel:
             is_2D (bool): whether this model is a 2D model, which means it can only move on the groud plane.
 
         """
+        self.control_noise = 0.02 # noise scale
+        self.safe_dis = 1
+        self.map_size = 10 # map boundary size
+        self.fraction = 0.2 # velocity decrease rate per dT
+        self.disk_radius = 0.4 # radius of disk
+        self.measure_noise = 0.02 # noise scale
+        self.auto=False # whether is controled by human
+        self.RLS_cache = dict() # RLS cache
+
         self.init_state = np.array(init_state)
         self.set_saturation()
 
@@ -55,9 +57,9 @@ class KinematicModel:
         self.agent = agent
         self.auto = auto
         self.is_2D = is_2D
-        goals = np.stack([rand(100)* self.map_size/2 - self.map_size / 4, 
-                        rand(100)* self.map_size/2 - self.map_size / 4, 
-                        rand(100)* self.map_size/4 + self.map_size / 4,
+        goals = np.stack([np.random.rand(100)* self.map_size/2 - self.map_size / 4, 
+                        np.random.rand(100)* self.map_size/2 - self.map_size / 4, 
+                        np.random.rand(100)* self.map_size/4 + self.map_size / 4,
                         zeros(100), 
                         zeros(100),
                         zeros(100)], axis=0 )
@@ -115,12 +117,12 @@ class KinematicModel:
         # print(dx)
         # print('dv')
         # print(dv)
-        if norm(dx) < 0.3 and norm(dv) < 0.5:
+        if np.linalg.norm(dx) < 0.3 and np.linalg.norm(dv) < 0.5:
             self.goal_achieved = self.goal_achieved + 1
             self.goal = np.vstack(self.goals[:,self.goal_achieved])
 
     def observe(self, x):
-        return x + randn(*np.shape(x)) * self.measure_noise
+        return x + np.random.randn(*np.shape(x)) * self.measure_noise
 
     def get_PV(self):
         """This function return the cartesian position and velocity of the robot,
@@ -137,20 +139,21 @@ class KinematicModel:
 
     
     def fx(self):
-        """This function calculate fx from A,
-        
+        """
+        This function calculate fx from A,
         Because
-            X' = X + dot_X * dT
+        X' = X + dot_X * dT
         Then
-            fx = (A - I) / dT
+        fx = (A - I) / dT
         """
         return (self.A() - np.eye(np.shape(self.x)[0])) / self.dT * self.x
     def fu(self):
-        """This function calculate fu from B,
+        """
+        This function calculate fu from B,
         Because
-            X' = X + dot_X * dT
+        X' = X + dot_X * dT
         Then
-            fu = B / dT
+        fu = B / dT
         """
         return self.B() / self.dT
 
@@ -189,7 +192,7 @@ class KinematicModel:
         dm = obstacle.m - self.m
         dp = (obstacle.m - self.m)[[0,1,2],0]
         dv = (obstacle.m - self.m)[[3,4,5],0]
-        dis = norm(dp)
+        dis = np.linalg.norm(dp)
         v_op = np.asscalar(dv.T * dp / dis)
 
         if dis < self.safe_dis:
@@ -223,6 +226,9 @@ class KinematicModel:
         self.update_trace()
 
     def update_trace(self):
+        """
+        update trace of end effector
+        """
         self.trace = np.concatenate([self.trace[:,1:], self.get_P()],axis=1)
         
     def update_m(self, Mh):
@@ -233,7 +239,8 @@ class KinematicModel:
         self.m = self.get_closest_X(Mh)
 
     def kalman_estimate_state(self):
-        """Use kalman filter to update the self state estimation.
+        """
+        Use kalman filter to update the self state estimation.
         """
         dT = self.dT
         A = self.A()
@@ -248,7 +255,7 @@ class KinematicModel:
         z = self.observe(self.x)
         y = z - self.H * x_pred
         S = R + H * P * H.T
-        K = P * H.T * inv(S)
+        K = P * H.T * np.linalg.inv(S)
         x_est = x_pred + K * y
         P = (I - K*H) * P * (I - K*H).T + K * R * K.T
         self.kalman_P = P
@@ -257,7 +264,9 @@ class KinematicModel:
         return x_est
 
     def calc_control(self, obstacle):
-        """Generate control input by the agent.
+        """
+        Generate control input by the agent.
+
         Args:
             obstacle (KinematicModel()): the obstacle
         """
@@ -280,38 +289,74 @@ class KinematicModel:
         self.u = self.filt_u(self.u)
 
     def dot_X(self):
-        """First order estimation of dot_X using current state and last state.
+        """
+        First order estimation of dot_X using current state and last state.
         """
         return (self.x - self.x_his[:,-2]) / self.dT
         # return (self.x_pred - self.x_est) / self.dT
         
     def move(self):
-        """Move phase. An random disturbance is added to the control input.
         """
-        self.x = self.A() * self.x + self.B() * (self.u + randn(np.shape(self.u)[0],1) * self.control_noise)
+        Move phase. An random disturbance is added to the control input.
+        """
+        self.x = self.A() * self.x + self.B() * (self.u + np.random.randn(np.shape(self.u)[0],1) * self.control_noise)
         self.x = self.filt_x(self.x)
         self.x_his = np.concatenate([self.x_his[:,1:], self.x],axis=1)
         self.m_his = np.concatenate([self.m_his[:,1:], self.m], axis=1)
 
+# The following functions are required to fill up for new models.
+
     def init_x(self, init_state):
+        """
+        init state x
+        """
         pass
     def set_saturation(self):
+        """
+        Set min and max cut off for state x and control u.
+        """
         pass
     def get_P(self):
+        """
+        Return position in the Cartisian space.
+        """
         pass
     def get_V(self):
+        """
+        Return velocity in the Cartisian space.
+        """
         pass
     def set_P(self, p):
+        """
+        Set position in the Cartisian space.
+
+        Args:
+            p (ndarray): position
+        """
         pass
     def set_V(self, v):
+        """
+        Set velocity in the Cartisian space
+
+        Args:
+            v (ndarray): velocity
+        """
         pass
     
     def A(self):
+        """
+        Transition matrix A as explained in the class definition.
+        """
         pass
     def B(self):
+        """
+        Transition matrix B as explained in the class definition.
+        """
         pass
     def get_closest_X(self, Mh):
-        """Update the corresponding state of the nearest cartesian point on self to obstacle. 
+        """
+        Update the corresponding state of the nearest cartesian point on self to obstacle. 
+        
         Args:
             Mh (ndarray): 6*1 array, cartesian postion and velocity of the obstacle.
         """
@@ -321,14 +366,29 @@ class KinematicModel:
         """
         pass
     def estimate_state(self):
+        """
+        State estimater caller.
+        """
         pass
     def u_ref(self):
+        """
+        Reference control input.
+        """
         pass
 
 
 ############## Graphics ##############
 
     def add_sphere(self, pos, color, scale=0.5):
+        """
+        Add a sphere model into the scene.
+
+        Args:
+            pos: position to place the sphere
+            color: color of the sphere
+            scale: scale to zoom the sphere
+        """
+        
         ret = loader.loadModel("resource/planet_sphere")
         ret.reparentTo(self.render)
         ret.setTransparency(TransparencyAttrib.MAlpha)
@@ -338,6 +398,10 @@ class KinematicModel:
         return ret;
 
     def draw_trace(self):
+        """
+        Show the trace of the end effector.
+        """
+
         if hasattr(self, 'trace_line_handle'):
             self.trace_line_handle.removeNode()
 
@@ -355,29 +419,43 @@ class KinematicModel:
 
         self.trace_line_handle = self.render.attachNewNode(trace_line);
 
-    def draw_arrow(self, p_from, p_to, color):
-        segs = LineSegs( )
-        segs.setThickness( 20.0 )
-        segs.setColor( color )
-        segs.moveTo( p_from )
-        segs.drawTo( p_to )
-        arrow = segs.create( )
-        self.render.attachNewNode(arrow)
-        return segs
+    # def draw_arrow(self, p_from, p_to, color):
+    #     segs = LineSegs( )
+    #     segs.setThickness( 20.0 )
+    #     segs.setColor( color )
+    #     segs.moveTo( p_from )
+    #     segs.drawTo( p_to )
+    #     arrow = segs.create( )
+    #     self.render.attachNewNode(arrow)
+    #     return segs
 
     def draw_movement(self, X, u):
+        """
+        For debug use.
+        Show the velocity vector and control vector.
+        """
         p_from = LVector3f(X[0], X[1], X[2]);
         v_to = p_from + LVector3f(X[3], X[4], X[5]);
         u_to = p_from + LVector3f(u[0], u[1], u[2]);
         u_color = Vec4(0.2, 0.8, 0.2, 0.5);
         v_color = Vec4(0.8, 0.2, 0.8, 0.5);
         return [self.draw_arrow(p_from, v_to, v_color), self.draw_arrow(p_from, u_to, u_color)];
-    
+
     def move_seg(self, vdata, p_from, vec):
+        """
+        Move a segment line to a new position.
+
+        Args:
+            vdata: segment line handle
+            p_from: new start point
+            vec: the segment line vector
+        """
         p_from = LVector3f(p_from[0], p_from[1], p_from[2])
         p_to = p_from + LVector3f(vec[0], vec[1], vec[2])
         vdata.setVertex(0, p_from)
         vdata.setVertex(1, p_to)  
+
+# The following functions are required to fill up for new models.
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
         """
