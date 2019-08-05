@@ -28,7 +28,7 @@ To install this repository:
 
 ```bash
 cd YOURPATH
-git clone git@github.com:Wei-TianHao/BIS.git
+git clone git@github.com:intelligent-control-lab/BIS.git
 #create a virtual environment named psb_env, using the latest python3.6
 conda create -n BIS python=3.6
 #activate the virtual env
