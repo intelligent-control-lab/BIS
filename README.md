@@ -1,5 +1,7 @@
 # BIS
 
+[<img src="https://img.shields.io/badge/docs-passing-brightgreen">](https://wei-tianhao.github.io/BIS/build/html/index.html)
+
 ### Introduction
 
 BIS is an open source benchmark for safe control algorithms. 
