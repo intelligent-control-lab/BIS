@@ -1,8 +1,9 @@
 # BIS
-
-[<img src="https://img.shields.io/badge/docs-latest-blue">](https://wei-tianhao.github.io/BIS/build/html/index.html)
-[<img src="https://img.shields.io/badge/version-1.0-brightgreen">]()
-
+|`Document`  |`Version`  |`Tutorial`|
+| :---:      | :---:     | :---:    |
+| [<img src="https://img.shields.io/badge/docs-latest-blue">](https://wei-tianhao.github.io/BIS/build/html/index.html)
+| [<img src="https://img.shields.io/badge/version-1.0-brightgreen">]()
+| [<img src="https://img.shields.io/badge/tutorial-ipynb-pink">] |
 ### Introduction
 
 BIS is an open source benchmark for safe control algorithms. 
