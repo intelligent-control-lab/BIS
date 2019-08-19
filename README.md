@@ -1,6 +1,6 @@
 # BIS
 
-[<img src="https://img.shields.io/badge/docs-passing-brightgreen">](https://wei-tianhao.github.io/BIS/build/html/index.html)
+[<img src="https://img.shields.io/badge/docs-latest-blue">](https://wei-tianhao.github.io/BIS/build/html/index.html)
 
 ### Introduction
 
