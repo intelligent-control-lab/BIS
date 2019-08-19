@@ -56,4 +56,26 @@ To see a demo, please run
 ```bash
 python test.py
 ```
+### Citation
 
+Please cite these papers in your publications if it helps your research:
+
+    @article{wei2019safe,
+      title={Safe Control Algorithms Using Energy Functions: A Unified Framework, Benchmark, and New Directions},
+      author={Wei, Tianhao and Liu, Changliu},
+      journal={arXiv preprint arXiv:1908.01883},
+      year={2019}
+    }
+
+    @inproceedings{liu2014control,
+      Author = {Liu, Changliu and Tomizuka, Masayoshi},
+      Booktitle = {Proceedings of the ASME Dynamic Systems and Control Conference (DSCC)},
+      Pages = {V003T42A003},
+      Title = {Control in a safe set: Addressing safety in human robot interactions},
+      Year = {2014},
+      Publisher = {ASME}}
+
+Links to these papers:
+
+- [Safe Control Algorithms Using Energy Functions: A Unified Framework, Benchmark, and New Directions](https://arxiv.org/abs/1908.01883?context=cs.SY)
+- [Control in a safe set: addressing safety in human-robot interactions](https://pdfs.semanticscholar.org/0ec9/ceef9ed2926c0388636368454cd259ad23fe.pdf)
