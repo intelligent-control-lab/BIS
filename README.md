@@ -44,7 +44,7 @@ conda install python.app
 ```
 ### Tutorial
 
-To add new algorithm and new model, please refer to tutorial.ipynb
+To add new algorithm and new model, please refer to [tutorial.ipynb](https://github.com/intelligent-control-lab/BIS/blob/master/tutorial.ipynb)
 
 To get the results on our paper, please run
 
