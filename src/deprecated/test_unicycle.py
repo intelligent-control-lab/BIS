@@ -154,15 +154,15 @@ class World(DirectObject):
         self.dT = 1 / self.frame_rate;
 
         self.robot = Unicycle([-l,-l,0,0], SafeSet(), self.dT, True);
-        self.robot_sphere = self.add_unicycle(list(self.robot.get_P()[:,0]) + [0],  [0.1, 0.5, 0.8, 1]);
-        self.robot_goal_sphere = self.add_sphere([self.robot.goal[0], self.robot.goal[1],0], [0.1, 0.5, 0.8, 0.5]);
+        self.agent_model = self.add_unicycle(list(self.robot.get_P()[:,0]) + [0],  [0.1, 0.5, 0.8, 1]);
+        self.goal_model = self.add_sphere([self.robot.goal[0], self.robot.goal[1],0], [0.1, 0.5, 0.8, 0.5]);
         self.robot_v = self.draw_unicycle_control(list(self.robot.get_PV()[:,0])+[0]);
         # self.half_plane = self.draw_half_plane(self.robot.safe_set);
         # self.half_plane_handle = render.attachNewNode(self.half_plane);
 
         self.human = Human([l,l,0,0], MobileAgent(), self.dT, True);
-        self.human_sphere = self.add_sphere(list(self.human.get_P()[:,0])+[0], [0.8, 0.3, 0.2, 0.8]);
-        self.human_goal_sphere = self.add_sphere([self.human.goal[0], self.human.goal[1],0], [0.8, 0.3, 0.2, 0.5]);
+        self.agent_model = self.add_sphere(list(self.human.get_P()[:,0])+[0], [0.8, 0.3, 0.2, 0.8]);
+        self.goal_model = self.add_sphere([self.human.goal[0], self.human.goal[1],0], [0.8, 0.3, 0.2, 0.5]);
         [self.human_v, self.human_u] = self.draw_movement(list(self.human.get_PV()[:,0])+[0], list(self.human.u[:,0])+[0]);
 
     
@@ -178,23 +178,23 @@ class World(DirectObject):
             # significant tearing would be visable
             self.human.update(self.robot);
             self.human.move(mpos.getX()*5, mpos.getY()*5);
-            self.human_sphere.setPos(self.human.get_P()[0], self.human.get_P()[1], 0);
-            self.human_goal_sphere.setPos(self.human.goal[0], self.human.goal[1], 0);
+            self.agent_model.setPos(self.human.get_P()[0], self.human.get_P()[1], 0);
+            self.goal_model.setPos(self.human.goal[0], self.human.goal[1], 0);
             self.move_seg(self.human_u, list(self.human.get_P()[:,0])+[0], list(self.human.u[:,0])+[0])
             self.move_seg(self.human_v, list(self.human.get_P()[:,0])+[0], list(self.human.get_V()[:,0])+[0])
 
             self.robot.update(self.human);
             # print('robot hpr')
-            # print(self.robot_sphere.getHpr())
+            # print(self.agent_model.getHpr())
             # print(self.robot.x)
             self.robot.move();
-            self.robot_sphere.setPos(self.robot.get_P()[0], self.robot.get_P()[1], 0);
-            self.robot_sphere.setH(self.robot.x[3,0] / np.pi * 180);
+            self.agent_model.setPos(self.robot.get_P()[0], self.robot.get_P()[1], 0);
+            self.agent_model.setH(self.robot.x[3,0] / np.pi * 180);
             # print('robot hpr')
-            # print(self.robot_sphere.getHpr())
+            # print(self.agent_model.getHpr())
             # print('set pos')
             # print(list(self.robot.get_P()[:,0])[0], list(self.robot.get_P()[:,0])[1])
-            self.robot_goal_sphere.setPos(self.robot.goal[0], self.robot.goal[1], 0);
+            self.goal_model.setPos(self.robot.goal[0], self.robot.goal[1], 0);
             
             self.move_seg(self.robot_v, list(self.robot.get_P()[:,0])+[0], list(self.robot.get_V()[:,0])+[0])
 

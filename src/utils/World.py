@@ -34,9 +34,10 @@ class World(DirectObject):
         print(ConfigVariableDouble("clock-frame-rate"))
         base.setFrameRateMeter(True)
 
-        base.setBackgroundColor(0, 0, 0)  # Set the background to black
+
+        base.setBackgroundColor(1., 1., 1.)  # Set the background to black
         base.disableMouse()  # disable mouse control of the camera
-        
+
         
         self.camera_h = 0
         self.camera_p = -60
@@ -74,12 +75,6 @@ class World(DirectObject):
     # end handleMouseClick
 
     def load_models(self):
-
-        self.sky = loader.loadModel("resource/solar_sky_sphere")
-        self.sky.reparentTo(render)
-        self.sky.setScale(10)
-        self.sky_tex = loader.loadTexture("resource/stars_1k_tex.jpg")
-        self.sky.setTexture(self.sky_tex, 1)
 
         l = self.map_size/2;
 
@@ -181,11 +176,42 @@ class World(DirectObject):
 
 
     def setupLights(self):  # Sets up some default lighting
-        ambientLight = AmbientLight("ambientLight")
-        ambientLight.setColor((.4, .4, .35, 1))
-        directionalLight = DirectionalLight("directionalLight")
-        directionalLight.setDirection(LVector3(0, 8, -2.5))
-        directionalLight.setColor((0.9, 0.8, 0.9, 1))
-        render.setLight(render.attachNewNode(directionalLight))
-        render.setLight(render.attachNewNode(ambientLight))
+        
+        self.light = render.attachNewNode(Spotlight("Spot"))
+        self.light.node().setScene(render)
+        self.light.node().setShadowCaster(True, 4096, 4096)
+        # self.light.node().showFrustum()
+        self.light.node().getLens().setFov(40)
+        self.light.setPos(0, -10, 40)
+        self.light.lookAt(0, 0, 0)
 
+        self.light.node().setCameraMask(BitMask32.bit(0))
+        self.human.goal_model.hide(BitMask32.bit(0))
+        self.robot.goal_model.hide(BitMask32.bit(0))
+        
+        self.light.node().getLens().setNearFar(1, 100)
+        render.setLight(self.light)
+
+        self.alight = render.attachNewNode(AmbientLight("Ambient"))
+        self.alight.node().setColor(LVector4(0.4, 0.4, 0.4, 1))
+        render.setLight(self.alight)
+
+        render.find('**/robot').setColor(LVector4(0.4, 0, 0.4, 1))
+
+        self.alight = render.find('**/robot').attachNewNode(AmbientLight("Ambient"))
+        self.alight.node().setColor(LVector4(0.02, 0.05, 0.1, 0))
+        render.find('**/robot').setLight(self.alight)
+
+        # ylight = render.find('**/robot').attachNewNode(Spotlight("Spot"))
+        # ylight.node().setScene(render)
+        # ylight.node().setShadowCaster(True, 2048, 2048)
+        # ylight.node().setColor(LVector4(0.8, 0.4, 0.0, 1))
+        # # ylight.node().showFrustum()
+        # ylight.node().getLens().setFov(40)
+        # ylight.setPos(0, 10, 20)
+        # ylight.lookAt(0, 0, 0)
+        # render.find('**/robot').setLight(ylight)
+
+
+        # Important! Enable the shader generator.
+        render.setShaderAuto()

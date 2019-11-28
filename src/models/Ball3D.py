@@ -97,13 +97,13 @@ class Ball3D(KinematicModel):
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
-        self.robot_sphere = self.add_sphere(list(self.get_P()[:,0]), color, scale);
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1], self.goal[2]], color[:-1]+[0.5], scale);
+        self.agent_model = self.add_sphere(list(self.get_P()[:,0]), color, scale);
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1], self.goal[2]], color[:-1]+[0.5], scale);
 
     def redraw_model(self):
         p = self.get_P()
-        self.robot_sphere.setPos(p[0], p[1] , p[2])
-        self.robot_goal_sphere.setPos(self.goal[0], self.goal[1], self.goal[2])
+        self.agent_model.setPos(p[0], p[1] , p[2])
+        self.goal_model.setPos(self.goal[0], self.goal[1], self.goal[2])
     
     def model_auxiliary(self):
         if not hasattr(self, 'robot_v'):

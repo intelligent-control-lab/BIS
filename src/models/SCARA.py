@@ -272,11 +272,11 @@ class SCARA(KinematicModel):
         self.robot_arm1 = pivot1
         self.robot_arm2 = pivot2
 
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
         
         
     def redraw_model(self):
         self.robot_arm1.setH(self.x[0,0] / np.pi * 180);
         self.robot_arm2.setH(self.x[1,0] / np.pi * 180);
 
-        self.robot_goal_sphere.setPos(self.goal[0], self.goal[1], 0)
+        self.goal_model.setPos(self.goal[0], self.goal[1], 0)

@@ -120,13 +120,13 @@ class Ball(KinematicModel):
 
     def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
-        self.robot_sphere = self.add_BB8(list(self.get_P()[:,0]), color, scale);
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
+        self.agent_model = self.add_BB8(list(self.get_P()[:,0]), color, scale);
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
 
     
     def redraw_model(self):
-        self.robot_sphere.setPos(self.get_P()[0], self.get_P()[1], 0)
-        self.robot_goal_sphere.setPos(self.goal[0], self.goal[1], 0)
+        self.agent_model.setPos(self.get_P()[0], self.get_P()[1], 0)
+        self.goal_model.setPos(self.goal[0], self.goal[1], 0)
             
     
     def model_auxiliary(self):

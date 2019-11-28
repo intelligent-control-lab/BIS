@@ -146,7 +146,8 @@ class Unicycle(KinematicModel):
         # tacc = loader.loadTexture('resource/R2D2/texture accesoires.jpg')
         # ret.find('**/*').setTexture(tacc, 1)
 
-        # print(ret.get_children())
+        print(ret.get_children())
+
         ttete = loader.loadTexture('resource/R2D2/texture tete.jpg')
         ret.find('**/tete').setTexture(ttete, 1)
 
@@ -156,7 +157,6 @@ class Unicycle(KinematicModel):
         # taxe = loader.loadTexture('resource/R2D2/texture bras.jpg')
         # ret.find('**/axes_bras*').setTexture(taxe, 1)
 
-        
         pivot = self.render.attachNewNode("unicycle")
         pivot.setPos(pos[0], pos[1], pos[2]) # Set location of pivot point
         ret.wrtReparentTo(pivot) # Preserve absolute position
@@ -173,13 +173,13 @@ class Unicycle(KinematicModel):
         
         
 
-        self.robot_goal_sphere = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
 
         
     def redraw_model(self):
         self.robot_model.setPos(self.get_P()[0], self.get_P()[1], 0);
         self.robot_model.setH(self.x[3,0] / np.pi * 180);
-        self.robot_goal_sphere.setPos(self.goal[0], self.goal[1], 0)
+        self.goal_model.setPos(self.goal[0], self.goal[1], 0)
 
     def model_auxiliary(self):
         if not hasattr(self, 'robot_v'):

@@ -146,11 +146,11 @@ class World(DirectObject):
         self.robot = SCARA([self.x0, self.y0, self.theta1, self.theta2, self.l1, self.l2], SafeSet(), self.dT, True);
         [self.robot_arm1, self.robot_arm2] = self.add_2d_arm([self.x0, self.y0, 0], self.theta1, self.theta2,  [0.1, 0.5, 0.8, 1], self.l1, self.l2);
         
-        self.robot_goal_sphere = self.add_sphere([self.robot.goal[0], self.robot.goal[1],0], [0.1, 0.5, 0.8, 0.5]);
+        self.goal_model = self.add_sphere([self.robot.goal[0], self.robot.goal[1],0], [0.1, 0.5, 0.8, 0.5]);
         
         self.human = Human([l,l,0,0], MobileAgent(), self.dT, False);
-        self.human_sphere = self.add_sphere(list(self.human.get_P()[:,0])+[0], [0.8, 0.3, 0.2, 0.8]);
-        self.human_goal_sphere = self.add_sphere([self.human.goal[0], self.human.goal[1],0], [0.8, 0.3, 0.2, 0.5]);
+        self.agent_model = self.add_sphere(list(self.human.get_P()[:,0])+[0], [0.8, 0.3, 0.2, 0.8]);
+        self.goal_model = self.add_sphere([self.human.goal[0], self.human.goal[1],0], [0.8, 0.3, 0.2, 0.5]);
         [self.human_v, self.human_u] = self.draw_movement(list(self.human.get_PV()[:,0])+[0], list(self.human.u[:,0])+[0]);
 
 
@@ -166,8 +166,8 @@ class World(DirectObject):
             # significant tearing would be visable
             self.human.update(self.robot);
             self.human.move(mpos.getX()*10, mpos.getY()*10);
-            self.human_sphere.setPos(self.human.get_P()[0], self.human.get_P()[1], 0);
-            self.human_goal_sphere.setPos(self.human.goal[0], self.human.goal[1], 0);
+            self.agent_model.setPos(self.human.get_P()[0], self.human.get_P()[1], 0);
+            self.goal_model.setPos(self.human.goal[0], self.human.goal[1], 0);
             self.move_seg(self.human_u, list(self.human.get_P()[:,0])+[0], list(self.human.u[:,0])+[0])
             self.move_seg(self.human_v, list(self.human.get_P()[:,0])+[0], list(self.human.get_V()[:,0])+[0])
 
@@ -177,7 +177,7 @@ class World(DirectObject):
             self.robot_arm2.setH(self.robot.x[1,0] / np.pi * 180);
             # print('robot hpr')
             # print(self.robot_arm1.getHpr())
-            self.robot_goal_sphere.setPos(self.robot.goal[0], self.robot.goal[1], 0);
+            self.goal_model.setPos(self.robot.goal[0], self.robot.goal[1], 0);
     
         return Task.cont  # Task continues infinitely
     # end load_models()
