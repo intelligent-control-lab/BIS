@@ -5,7 +5,7 @@ import numpy as np
 from agents import *
 from models import *
 from utils.Tuner import Tuner
-from matplotlib2tikz import save as tikz_save
+# from tikzplotlib import save as tikz_save
 from scipy.spatial import ConvexHull
 from cycler import cycler
 import shutil, os
@@ -20,12 +20,13 @@ def draw_curve(passive=True):
     """
     x_lims = [-25, -30, -50, -30]
     models = ['Ball3D', 'Unicycle', 'SCARA', 'RobotArm']
-    algorithms  = ['ZeroingBarrierFunction', 'PotentialField', 'SlidingMode', 'SafeSet',  'SublevelSafeSet']
-    labels = {  'PotentialField': 'PFM',
-                'SafeSet':'SSA',
-                'ZeroingBarrierFunction':'ZBF',
-                'SlidingMode':'SMA',
-                'SublevelSafeSet':'SSS' }
+    # algorithms  = ['BarrierFunction', 'PotentialField', 'SlidingMode', 'SafeSet',  'SublevelSafeSet']
+    algorithms  = ['ZBF', 'PFM', 'SlidingMode', 'SafeSet', 'SublevelSafeSet']
+    labels = {  'PFM': 'Potential Field',
+                'SafeSet':'Safe Set',
+                'ZBF':'Barrier Function',
+                'SlidingMode':'Sliding Mode',
+                'SublevelSafeSet':'Sublevel Safe Set' }
     m = 0
     for model in models:
         c = 0
@@ -122,13 +123,14 @@ def draw_curve(passive=True):
         fig.legend(fontsize=12)
         plt.xlabel('Safety', fontsize=20)
         plt.ylabel('Efficiency', fontsize=20)
-        tikz_save(model+'.tex')
+        # tikz_save(model+'.tex')
         save_name = model+'.pdf'
         if not passive:
             save_name = 'interactive_' + save_name
         else:
             save_name = 'passive_' + save_name
-        fig.savefig(save_name, bbox_inches='tight')
+
+        fig.savefig('results/'+save_name, bbox_inches='tight')
         # plt.show()
 
 if __name__ == '__main__':

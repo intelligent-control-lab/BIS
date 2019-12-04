@@ -375,7 +375,7 @@ class RobotArm(KinematicModel):
         # print(u0)
         return u0;
 
-    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
+    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 1], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
 
         pos = self.base
@@ -388,22 +388,22 @@ class RobotArm(KinematicModel):
         l2 = self.l[1,0]
         l3 = self.l[2,0]
 
-        self.robot_model = render.attachNewNode('robot')
+        self.agent_model = render.attachNewNode('agent')
 
         ret1 = loader.loadModel("resource/cube")
-        ret1.reparentTo(self.robot_model)
+        ret1.reparentTo(self.agent_model)
         ret1.setColor(color[0], color[1], color[2], color[3]);
         ret1.setScale(l1/2, 0.1, 0.1);
         ret1.setPos(pos[0]+l1/2, pos[1], pos[2]);
 
 
-        pivot1 = self.robot_model.attachNewNode("arm1-pivot")
+        pivot1 = self.agent_model.attachNewNode("arm1-pivot")
         pivot1.setPos(pos[0], pos[1], pos[2]) # Set location of pivot point
         ret1.wrtReparentTo(pivot1) # Preserve absolute position
         
 
         ret2 = loader.loadModel("resource/cube")
-        ret2.reparentTo(self.robot_model)
+        ret2.reparentTo(self.agent_model)
         ret2.setColor(color[0], color[1], color[2], color[3])
         ret2.setScale(l2/2, 0.1, 0.1)
         ret2.setPos(pos[0]+l1+l2/2, pos[1], pos[2])
@@ -414,7 +414,7 @@ class RobotArm(KinematicModel):
 
 
         ret3 = loader.loadModel("resource/cube")
-        ret3.reparentTo(self.robot_model)
+        ret3.reparentTo(self.agent_model)
         ret3.setColor(color[0], color[1], color[2], color[3])
         ret3.setScale(l3/2, 0.1, 0.1)
         ret3.setPos(pos[0]+l1+l2+l3/2, pos[1], pos[2])

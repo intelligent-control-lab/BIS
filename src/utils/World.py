@@ -114,10 +114,9 @@ class World(DirectObject):
             # Restrain is used to make sure the values returned by getMouse are in the
             # valid range. If this particular model were to turn more than this,
             # significant tearing would be visable
-            dv = 30
+            dv = 0
             self.camera_h_v = dv if mx > 0.5 else -dv if mx < -0.5 else 0
             self.camera_p_v = -dv if my > 0.5 else dv if my < -0.5 else 0
-
 
             self.camera_h = self.camera_h + self.camera_h_v * self.dT
             self.camera_p = self.camera_p + self.camera_p_v * self.dT
@@ -196,13 +195,13 @@ class World(DirectObject):
         self.alight.node().setColor(LVector4(0.4, 0.4, 0.4, 1))
         render.setLight(self.alight)
 
-        render.find('**/robot').setColor(LVector4(0.4, 0, 0.4, 1))
+        render.find('**/agent').setColor(LVector4(0.4, 0, 0.4, 1))
 
-        self.alight = render.find('**/robot').attachNewNode(AmbientLight("Ambient"))
+        self.alight = render.find('**/agent').attachNewNode(AmbientLight("Ambient"))
         self.alight.node().setColor(LVector4(0.02, 0.05, 0.1, 0))
-        render.find('**/robot').setLight(self.alight)
+        render.find('**/agent').setLight(self.alight)
 
-        # ylight = render.find('**/robot').attachNewNode(Spotlight("Spot"))
+        # ylight = render.find('**/agent').attachNewNode(Spotlight("Spot"))
         # ylight.node().setScene(render)
         # ylight.node().setShadowCaster(True, 2048, 2048)
         # ylight.node().setColor(LVector4(0.8, 0.4, 0.0, 1))
@@ -210,7 +209,7 @@ class World(DirectObject):
         # ylight.node().getLens().setFov(40)
         # ylight.setPos(0, 10, 20)
         # ylight.lookAt(0, 0, 0)
-        # render.find('**/robot').setLight(ylight)
+        # render.find('**/agent').setLight(ylight)
 
 
         # Important! Enable the shader generator.

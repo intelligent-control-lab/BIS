@@ -93,11 +93,11 @@ class HumanBall2D(Ball):
         super().move()
 
         
-    def load_model(self, render, loader, color=[0.8, 0.3, 0.2, 0.8], scale=0.5):
+    def load_model(self, render, loader, color=[0.8, 0.3, 0.2, 1], scale=0.5):
         self.render = render
-        self.agent_model = self.add_sphere(list(self.get_P()[:,0]), [0.8, 0.3, 0.2, 0.8], scale)
-        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], [0.8, 0.3, 0.2, 0.5], scale)
-    
+        self.agent_model = self.add_sphere(list(self.get_P()[:,0]), [0.8, 0.3, 0.2, 1], scale, render.attachNewNode('agent'));
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], [0.8, 0.3, 0.2, 0.5], scale, render.attachNewNode('goal'));
+
     def redraw_model(self):
         self.agent_model.setPos(self.get_P()[0], self.get_P()[1], 0)
         self.goal_model.setPos(self.goal[0], self.goal[1], 0)

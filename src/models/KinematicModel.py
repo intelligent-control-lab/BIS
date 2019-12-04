@@ -379,7 +379,7 @@ class KinematicModel:
 
 ############## Graphics ##############
 
-    def add_sphere(self, pos, color, scale=0.5):
+    def add_sphere(self, pos, color, scale=0.5, render_node=None):
         """
         Add a sphere model into the scene.
 
@@ -388,9 +388,10 @@ class KinematicModel:
             color: color of the sphere
             scale: scale to zoom the sphere
         """
-        
+        if render_node is None:
+            render_node = self.render
         ret = loader.loadModel("resource/planet_sphere")
-        ret.reparentTo(self.render)
+        ret.reparentTo(render_node)
         ret.setTransparency(TransparencyAttrib.MAlpha)
         ret.setColor(color[0], color[1], color[2], color[3])
         ret.setScale(scale)
@@ -457,7 +458,7 @@ class KinematicModel:
 
 # The following functions are required to fill up for new models.
 
-    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
+    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 1], scale=0.5):
         """
         Load the 3d model to be shown in the GUI
 

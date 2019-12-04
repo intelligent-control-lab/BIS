@@ -134,9 +134,9 @@ class Unicycle(KinematicModel):
         
         return u0;
 
-    def load_R2D2(self, pos, color, scale):
+    def load_R2D2(self, pos, color, scale, render_node):
         ret = loader.loadModel("resource/R2D2/R2D2.obj")
-        ret.reparentTo(self.render)
+        ret.reparentTo(render_node)
         ret.setColor(color[0], color[1], color[2], color[3]);
         ret.setScale(scale / 30)
         ret.setPos(pos[0], pos[1], pos[2]-0.3)
@@ -157,28 +157,34 @@ class Unicycle(KinematicModel):
         # taxe = loader.loadTexture('resource/R2D2/texture bras.jpg')
         # ret.find('**/axes_bras*').setTexture(taxe, 1)
 
-        pivot = self.render.attachNewNode("unicycle")
+        pivot = render_node.attachNewNode("unicycle")
         pivot.setPos(pos[0], pos[1], pos[2]) # Set location of pivot point
         ret.wrtReparentTo(pivot) # Preserve absolute position
 
         return pivot;
 
-    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
+    def load_unicycle(self, loader, color, scale, render_node):
+            
+        pos = list(self.get_P()[:,0])
+        ret = loader.loadModel("resource/cube")
+        ret.reparentTo(render_node)
+        ret.setColor(color[0], color[1], color[2], color[3]);
+        ret.setScale(scale,0.1,scale);
+        ret.setPos(pos[0], pos[1], pos[2]);
+        return ret
+
+    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 1], scale=0.5):
         
         KinematicModel.load_model(self, render, loader, color, scale)
-
         pos = list(self.get_P()[:,0])
-
-        self.robot_model = self.load_R2D2(pos, color, scale)
-        
-        
-
-        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
+        # self.agent_model = self.load_R2D2(pos, color, scale, render.attachNewNode('agent'))
+        self.agent_model = self.load_unicycle(loader, color, scale, render.attachNewNode('agent'))
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale, render.attachNewNode('goal'))
 
         
     def redraw_model(self):
-        self.robot_model.setPos(self.get_P()[0], self.get_P()[1], 0);
-        self.robot_model.setH(self.x[3,0] / np.pi * 180);
+        self.agent_model.setPos(self.get_P()[0], self.get_P()[1], 0);
+        self.agent_model.setH(self.x[3,0] / np.pi * 180);
         self.goal_model.setPos(self.goal[0], self.goal[1], 0)
 
     def model_auxiliary(self):

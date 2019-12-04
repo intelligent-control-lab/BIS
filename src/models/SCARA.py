@@ -238,7 +238,7 @@ class SCARA(KinematicModel):
 
         return u0;
 
-    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
+    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 1], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
 
         pos = [-4, -4, 0]
@@ -247,19 +247,21 @@ class SCARA(KinematicModel):
         l1 = 4.5;
         l2 = 4.5;
 
+        self.agent_model = render.attachNewNode('agent')
+
         ret1 = loader.loadModel("resource/cube")
-        ret1.reparentTo(render)
+        ret1.reparentTo(self.agent_model)
         ret1.setColor(color[0], color[1], color[2], color[3]);
         ret1.setScale(l1/2, 0.1, 0.1);
         ret1.setPos(pos[0]+l1/2, pos[1], pos[2]);
 
-        pivot1 = render.attachNewNode("arm1-pivot")
+        pivot1 = self.agent_model.attachNewNode("arm1-pivot")
         pivot1.setPos(pos[0], pos[1], pos[2]) # Set location of pivot point
         ret1.wrtReparentTo(pivot1) # Preserve absolute position
         pivot1.setH(theta1) # Rotates environ around pivot
 
         ret2 = loader.loadModel("resource/cube")
-        ret2.reparentTo(render)
+        ret2.reparentTo(self.agent_model)
         ret2.setColor(color[0], color[1], color[2], color[3]);
         ret2.setScale(l2/2, 0.1, 0.1);
         ret2.setPos(pos[0]+l2/2+l1, pos[1], pos[2]);

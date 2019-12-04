@@ -98,11 +98,11 @@ class Ball(KinematicModel):
 
 
 
-    def add_BB8(self, pos, color, scale=0.5):
+    def add_BB8(self, pos, color, scale, render_node):
         ret = loader.loadModel("resource/BB8/bb8.obj")
-        ret.reparentTo(self.render)
+        ret.reparentTo(render_node)
         ret.setTransparency(TransparencyAttrib.MAlpha)
-        ret.setColor(color[0], color[1], color[2], color[3])
+        # ret.setColor(color[0], color[1], color[2], color[3])
         ret.setP(90)
         ret.setScale(scale / 50)
         ret.setPos(pos[0], pos[1], pos[2]-0.5)
@@ -118,10 +118,11 @@ class Ball(KinematicModel):
         return pivot;
 
 
-    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 0.8], scale=0.5):
+    def load_model(self, render, loader, color=[0.1, 0.5, 0.8, 1], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
-        self.agent_model = self.add_BB8(list(self.get_P()[:,0]), color, scale);
-        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale);
+        # self.agent_model = self.add_BB8(list(self.get_P()[:,0]), color, scale, render.attachNewNode('agent'))
+        self.agent_model = self.add_sphere([self.goal[0], self.goal[1],0], color, scale, render.attachNewNode('agent'))
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1],0], color[:-1]+[0.5], scale, render.attachNewNode('goal'))
 
     
     def redraw_model(self):

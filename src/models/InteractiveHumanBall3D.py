@@ -92,10 +92,10 @@ class InteractiveHumanBall3D(KinematicModel):
 
 
 
-    def load_model(self, render, loader, color=[0.8, 0.3, 0.2, 0.8], scale=0.5):
+    def load_model(self, render, loader, color=[0.8, 0.3, 0.2, 1], scale=0.5):
         KinematicModel.load_model(self, render, loader, color, scale)
-        self.agent_model = self.add_sphere(list(self.get_P()[:,0]), color, scale);
-        self.goal_model = self.add_sphere([self.goal[0], self.goal[1], self.goal[2]], color[:-1]+[0.5], scale);
+        self.agent_model = self.add_sphere(list(self.get_P()[:,0]), color, scale, render.attachNewNode('agent'));
+        self.goal_model = self.add_sphere([self.goal[0], self.goal[1], self.goal[2]], color[:-1]+[0.5], scale, render.attachNewNode('goal'));
 
     def redraw_model(self):
         p = self.get_P()
